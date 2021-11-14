@@ -1,22 +1,20 @@
-const mongoose = require("mongoose");
 const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 import { Request, Response } from 'express';
-require('dotenv').config();
+import * as db from './db-driver';
+
 
 try {
-    mongoose.connect(process.env.MONGO_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
-
+    (async () => { await db.connect(); })();
+    console.log('Connected to DB');
 } catch (e: unknown) {
-    if (e instanceof Error)
+    if (e instanceof Error) {
         console.error(e.message);
+        throw e;
+    }
 }
-
 
 app.get('/chat/roomID', (req: Request, res: Response) => {
     res.send('<h1>Hello</h1>');
