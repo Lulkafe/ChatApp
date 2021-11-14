@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
+import generateRoomID from './roomIDGenerator';
 import { Request, Response } from 'express';
 import * as db from './db-driver';
 
@@ -18,6 +19,13 @@ try {
 
 app.get('/chat/roomID', (req: Request, res: Response) => {
     res.send('<h1>Hello</h1>');
+
+    const id = generateRoomID();
+
+    /*
+      generate room ID(s)
+      ask the db if this is unique
+    */
 });
 
 server.listen(3000, () => {
