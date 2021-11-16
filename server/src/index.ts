@@ -2,9 +2,8 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-import generateRoomID from './roomIDGenerator';
 import { Request, Response } from 'express';
-import * as db from './chatRoom';
+import * as db from './chatRoomHandler';
 
 
 app.get('/chat/new/roomID', (req: Request, res: Response) => {

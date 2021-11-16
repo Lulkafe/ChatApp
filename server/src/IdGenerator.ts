@@ -1,3 +1,7 @@
+// ID Generator
+// This module generates a random ID composed of numbers and alphabets: [0-9a-zA-Z]  
+// By default, it can generate 36^4 (= 1,679,616) patterns: e.g. 9K8A
+
 const charTable = (() => {
     let ary: string[] = [];
     
@@ -10,7 +14,7 @@ const charTable = (() => {
     return ary;
 })()
 
-export default function generateRoomID (IdStrLen: number = 4, numOfID: number = 1): string | string[] {
+export default function generateIds (numOfID: number = 1, IdStrLen: number = 4): string[] {
 	const chars: string[] = charTable;
     const _generateId = () => {
         let id: string = ''
@@ -22,7 +26,7 @@ export default function generateRoomID (IdStrLen: number = 4, numOfID: number = 
     }
     
     if (numOfID === 1) 
-        return _generateId();
+        return [_generateId()];
     else {
         let ids: string[] = [];
         for (let i = 0; i < numOfID; i++)
