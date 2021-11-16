@@ -14,3 +14,11 @@ export async function connect () {
         useUnifiedTopology: true
     });
 }
+
+async function isRoomIdUnique (roomId: string): Promise<boolean> {
+    return false;
+}
+
+async function createNewRoom (roomId: string) {
+    
+}

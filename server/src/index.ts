@@ -17,11 +17,8 @@ try {
     }
 }
 
-app.get('/chat/roomID', (req: Request, res: Response) => {
+app.get('/chat/new/roomID', (req: Request, res: Response) => {
     res.send('<h1>Hello</h1>');
-
-    const id = generateRoomID();
-
     /*
       generate room ID(s)
       ask the db if this is unique
