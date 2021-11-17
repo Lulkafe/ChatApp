@@ -78,11 +78,13 @@ export class ChatRoomHandler {
                 continue;
             }
 
-            //Only one room and it hasn't expired yet
-            if (i === 0) 
+            //No room hasn't expired yet
+            //This is guarantted because a new room is always pushed to an array
+            //So, Smaller index == Ealier Timp stamp
+            if (i === 0)  
                 break;
 
-            //If code reaches here, at least one room has expired
+            //If the execution reaches here, at least one room has expired
             this.roomArray = this.roomArray.slice(i);
             break;
         }
