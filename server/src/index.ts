@@ -3,14 +3,16 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 import { Request, Response } from 'express';
-import * as db from './chatRoomHandler';
-
+import {ChatRoomHandler, chatRoom } from './chatRoomHandler';
+const roomHandler = new ChatRoomHandler();
 
 app.get('/chat/new/roomID', (req: Request, res: Response) => {
-    res.send('<h1>Hello</h1>');
-    /*
-      generate room ID(s)
-    */
+    
+    if (roomHandler.canCreateNewRoom()) {
+        const newRoom: chatRoom = roomHandler.createNewRoom();
+        res.json(newRoom);
+    }
+
 });
 
 server.listen(3000, () => {

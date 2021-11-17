@@ -1,59 +1,74 @@
 import generateIds from './IdGenerator';
 
-interface chatRoom {
+export interface chatRoom {
     createdOn: string,
     expiredIn: number,
     roomID: string
 }
 
-export class chatRoomHandler {
-    private lifespan: number;
+export class ChatRoomHandler {
+    private validMin: number;
     private roomArray: chatRoom[];
     private roomDic: {};
     private roomMax: number;
+    private intervalId: number;
 
-    constructor (lifespan : number = 20) {
-        this.lifespan = lifespan;
+    constructor (validMin : number = 20) {
+        this.validMin = validMin;
         this.roomArray = [];
         this.roomDic = {};
         this.roomMax = 10000;
+        this.intervalId = 0;
     }
     
-    public createNewRoom (): boolean {
-
-        if (this.cannotCreateMoreRooms())
-            return false;
+    public createNewRoom (): chatRoom {
 
         const newId = this.findValidId();
         let newRoom: chatRoom = {
             createdOn: new Date().toISOString(),
-            expiredIn: this.lifespan,
+            expiredIn: this.validMin,
             roomID: newId
         }
 
+        //Start watching rooms if there are any
+        if (this.noActiveRoom()) 
+            this.intervalId = window.setInterval(this.clearExpiredRooms, 1000);
+
         this.roomArray.push(newRoom);
         this.roomDic[newId] = 0;
-        
-        return true;
+            
+        return newRoom;
+    }
+    
+    public canCreateNewRoom (): boolean {
+        return this.roomArray.length <= this.roomMax;
     }
 
     private findValidId (): string {
         let newId = ''
+        let attempt = 0;
+        const ATN_MAX = 10;
+        const QTY = 5;
         
-        while (newId === '') {
-            let newIdCandidates: string[] = generateIds(5);
+        while (newId === '' && attempt < ATN_MAX) {
+            let newIdCandidates: string[] = generateIds(QTY);
 
             for (const idCandidate of newIdCandidates) {
                 if (this.isThisIdUnique(idCandidate))
                     newId = idCandidate;
                     break;
             }
+
+            attempt += 1;
         }
+
+        if (attempt > ATN_MAX)
+            throw new Error(`Could not find a valid room ID within ${attempt} time attempts`)
 
         return newId;
     }
 
-    public clearExpiredRooms (): void {
+    private clearExpiredRooms (): void {
         
         for (let i = 0; i < this.roomArray.length; i++) {
             const room = this.roomArray[i];
@@ -63,20 +78,22 @@ export class chatRoomHandler {
                 continue;
             }
 
-            //When the execution reaches here,
-            //There are no expired anymore at rooms[i or greater]
+            //Only one room and it hasn't expired yet
+            if (i === 0) 
+                break;
 
-            if (i === 0)
-                return;
-
+            //If code reaches here, at least one room has expired
             this.roomArray = this.roomArray.slice(i);
             break;
         }
 
+        //No active room so No need to watch rooms
+        if (this.noActiveRoom())
+            window.clearTimeout(this.intervalId);
     }
 
-    private cannotCreateMoreRooms (): boolean {
-        return this.roomArray.length === this.roomMax;
+    private noActiveRoom (): boolean {
+        return this.roomArray.length === 0;
     }
 
     private isThisIdUnique (id: string): boolean {        
