@@ -2,9 +2,17 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
+const { Server } = require('socket.io');
+const io = new Server (server);
+
 import { Request, Response } from 'express';
 import {ChatRoomHandler, chatRoom } from './chatRoomHandler';
 const roomHandler = new ChatRoomHandler();
+
+
+app.get('/', (req: Request, res: Response) => {
+    res.sendFile(__dirname + '/index.html');
+})
 
 app.get('/chat/new/roomID', (req: Request, res: Response) => {
     
@@ -15,6 +23,15 @@ app.get('/chat/new/roomID', (req: Request, res: Response) => {
 
 });
 
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+
+    io.on('disconnect', (socket) => {
+        console.log('A user disconnected');
+    })
+})
+
 server.listen(3000, () => {
-    console.log('Hello, Client!');
+    console.log('Listening on port 3000');
 })

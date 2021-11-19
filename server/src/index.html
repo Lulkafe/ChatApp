@@ -1,0 +1,17 @@
+<!-- Test purpose. Will remove this later -->
+
+<!DOCTYPE html>
+
+<script src="https://cdn.socket.io/4.4.0/socket.io.min.js" integrity="sha384-1fOn6VtTq3PWwfsOrk45LnYcGosJwzMHv+Xh/Jx5303FVOXzEnw0EpLv30mtjmlj" crossorigin="anonymous"></script>
+<script>
+    var socket;
+    function connect () {
+        socket = io();
+    }
+</script>
+<html>
+    <body>
+        <h1>Test site</h1>
+        <button onclick="connect();">Button</button>
+    </body>
+</html>
