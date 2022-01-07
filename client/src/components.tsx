@@ -3,10 +3,33 @@ import { io } from 'socket.io-client';
 
 export const App = () => {
 
+    const [socket, setSocket] = useState(null);
+
     useEffect(() => {
         console.log('Inside UseEffect');
-        const socket = io();
+        let soc = io();
+        setSocket(soc);
+
+        soc.on('chat message', function(msg) {
+           console.log('Received a message: ' + msg); 
+        });
+
+
+        console.log('socket variable should be set');
     }, []);
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        const inputElem = document.getElementById('input');
+        const text = (inputElem as HTMLInputElement).value;
+        if (text && socket) {
+            console.log('Text and socket are both available. sending message...')
+            socket.emit('chat message', text);
+            (inputElem as HTMLInputElement).value = '';
+        } else {
+            console.log('text or socket is missing');
+        }
+    }
 
     return (
         <div>
@@ -16,8 +39,8 @@ export const App = () => {
                 </ul>
             </div>
             <form>
-                <input type='text' placeholder="chat text"></input>
-                <button type='submit'>Submit</button>
+                <input type='text' placeholder="chat text" id='input'></input>
+                <button type='submit' onSubmit={onSubmit}>Submit</button>
             </form>
         </div>
     )
