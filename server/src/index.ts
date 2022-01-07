@@ -11,7 +11,7 @@ const roomHandler = new ChatRoomHandler();
 
 
 app.get('/', (req: Request, res: Response) => {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile('../../client/dist/index.html');
 })
 
 app.get('/chat/new/roomID', (req: Request, res: Response) => {
@@ -25,8 +25,7 @@ app.get('/chat/new/roomID', (req: Request, res: Response) => {
 
 io.on('connection', (socket) => {
     console.log('A user connected');
-
-
+    
     socket.on('disconnect', (socket) => {
         console.log('A user disconnected');
     })

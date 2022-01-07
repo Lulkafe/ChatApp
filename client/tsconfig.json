@@ -3,6 +3,7 @@
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
+    "moduleResolution": "node",
     "module": "es6",
     "target": "es5",
     "allowJs": true
