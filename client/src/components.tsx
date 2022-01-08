@@ -7,7 +7,7 @@ export const App = () => {
 
     useEffect(() => {
         console.log('Inside UseEffect');
-        let soc = io();
+        let soc = io('http://localhost:3000');
         setSocket(soc);
 
         soc.on('chat message', function(msg) {
