@@ -4,24 +4,46 @@ import { io } from 'socket.io-client';
 export const App = () => {
 
     const [socket, setSocket] = useState(null);
+    const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         console.log('Inside UseEffect');
         let soc = io('http://localhost:3000');
         setSocket(soc);
+        
+        console.log('socket variable should be set');
 
         soc.on('chat message', function(msg) {
-           console.log('Received a message: ' + msg); 
+           setMessages([...messages, msg]);
         });
 
-
-        console.log('socket variable should be set');
     }, []);
 
+    return (
+        <div>
+            <div className='test__massage-field'>
+                <ul className='test__message-list'>
+                   <li>Text Message appears below</li> 
+                   { 
+                    messages.map((message, i) => <li key={i}>{message}</li>)
+                    }
+                </ul>
+            </div>
+            <MessageField socket={socket} messages={messages}/>
+        </div>
+    )
+}
+
+const MessageField = (props) => {
+
+    const { socket} = props;
+
     const onSubmit = (e) => {
+        console.log('Submitted..');
         e.preventDefault();
         const inputElem = document.getElementById('input');
         const text = (inputElem as HTMLInputElement).value;
+        console.log(`Fetched text from Input fied: ${text}`);
         if (text && socket) {
             console.log('Text and socket are both available. sending message...')
             socket.emit('chat message', text);
@@ -33,33 +55,9 @@ export const App = () => {
 
     return (
         <div>
-            <div className='test__massage-field'>
-                <ul className='test__message-list'>
-                   <li>Text Message appears below</li> 
-                </ul>
-            </div>
-            <form>
-                <input type='text' placeholder="chat text" id='input'></input>
-                <button type='submit' onSubmit={onSubmit}>Submit</button>
-            </form>
-        </div>
-    )
-}
-
-
-//Test component to check functionality. Will be removed later
-const Test = () => {
-
-    const onSubmit = (e) => {
-        e.preventDefault();
-    }
-
-    return (
-        <div>
-            <ul id='test__message-list'></ul>
             <form onSubmit={onSubmit}>
-                <input type='text'></input>
-                <button type='submit'></button>
+                <input type='text' placeholder="chat text" id='input'></input>
+                <button type='submit' >Submit</button>
             </form>
         </div>
     )

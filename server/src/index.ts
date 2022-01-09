@@ -3,7 +3,7 @@ const app = express();
 const http = require('http');
 const cors = require('cors');
 const server = http.createServer(app);
-const frontEndOrigin = 'http://127.0.0.1:5501';
+const frontEndOrigin = ['http://localhost:5501', 'http://127.0.0.1:5501'];
 const io = require('socket.io')(server, {
     cors: {
         origin: frontEndOrigin,
@@ -26,6 +26,11 @@ app.get('/api/roomID', (req: Request, res: Response) => {
 
 io.on('connection', (socket) => {
     console.log('A user connected');
+
+    socket.on('chat message', (msg) => {
+        console.log('Received a chat message. Emitting to users..');
+        io.emit('chat message', msg);
+    })
 
     socket.on('disconnect', (socket) => {
         console.log('A user disconnected');
