@@ -16,7 +16,6 @@ export const App = () => {
         soc.on('chat message', function(msg) {
            dispatch({ type: ACTION.UPDATE.MESSAGE, value: msg });
         });
-
     }, []);
 
     return (
@@ -57,6 +56,30 @@ const MessageField = (props) => {
                 <input type='text' placeholder="chat text" id='input'></input>
                 <button type='submit' >Submit</button>
             </form>
+        </div>
+    )
+}
+
+const RoomIdField = () => {
+
+    const [id, setId] = useState('');
+
+    const onClick = async () => {
+        //Return (success): id (string)
+        //       (failure): null 
+
+        //const response: Response = await fetch('http://localhost:3000/api/roomID');
+        //const { roomId } = await response.json();
+        const roomId = 'ABCDEF';
+
+        if (roomId)
+            setId(roomId);
+    }
+
+    return (
+        <div>
+            <input type='input' readOnly id='input__roomID' value={id}></input>
+            <button type='button'>Reserve</button>
         </div>
     )
 }

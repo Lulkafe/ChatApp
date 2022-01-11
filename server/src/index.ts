@@ -15,6 +15,7 @@ import { Request, Response } from 'express';
 import {ChatRoomHandler, chatRoom } from './chatRoomHandler';
 const roomHandler = new ChatRoomHandler();
 
+//User requests a room ID to server
 app.get('/api/roomID', (req: Request, res: Response) => {
     
     if (roomHandler.canCreateNewRoom()) {
@@ -24,12 +25,21 @@ app.get('/api/roomID', (req: Request, res: Response) => {
 
 });
 
+//Guest user inquires(posts to) the server if a room exists
+app.post('/api/roomID', (req: Request, res: Response) => {
+    
+});
+
 io.on('connection', (socket) => {
     console.log('A user connected');
 
     socket.on('chat message', (msg) => {
         console.log('Received a chat message. Emitting to users..');
         io.emit('chat message', msg);
+    })
+
+    socket.on('register room', () => {
+
     })
 
     socket.on('disconnect', (socket) => {

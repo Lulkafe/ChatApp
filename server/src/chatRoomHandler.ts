@@ -44,6 +44,16 @@ export class ChatRoomHandler {
         return this.roomArray.length <= this.roomMax;
     }
 
+    public doesThisRoomExist (roomID: string): boolean {
+        
+        for(const room of this.roomArray) {
+            if(room.roomID === roomID)
+                return true;
+        }
+
+        return false;
+    }
+
     private findValidId (): string {
         let newId = ''
         let attempt = 0;
