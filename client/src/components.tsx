@@ -60,17 +60,60 @@ const MessageField = (props) => {
     )
 }
 
-const RoomIdField = () => {
+const RoomIDFieldForGuest = () => {
+    
+    const inputId = 'user-input';
+    const placeholder = 'Tell me Room #';
+    const onClick = async () => {
+        /*
+            send the room # (ID) given by user to the server
+            If the ID exists, the room # is registered in state
+        */
+        const input: string = 
+            (document.getElementById(inputId) as HTMLInputElement).value;
+
+        const response: Response =
+            await fetch('http://localhost:3000/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ roomId: input })
+            });
+
+        const result = await response.json();
+
+        if (result) {
+            //This room exists (= the guess can access now)
+
+        }
+
+        (document.getElementById(inputId) as HTMLInputElement).value = '';
+    }
+
+    return (
+        <div>
+            <input type='text' placeholder={placeholder} id={inputId}></input>
+            <button type='button' onClick={onClick}>Confirm</button>
+        </div>
+    )
+}
+
+const RoomIDFieldForHost = () => {
 
     const [id, setId] = useState('');
 
     const onClick = async () => {
+        //In real implementation,
+        //this should count how many IDs have been generated
+        //in order to avoid that one user generates too many IDs
+
         //Return (success): id (string)
         //       (failure): null 
 
-        //const response: Response = await fetch('http://localhost:3000/api/roomID');
-        //const { roomId } = await response.json();
-        const roomId = 'ABCDEF';
+        const response: Response = await fetch('http://localhost:3000/api/roomID');
+        const { roomId } = await response.json();
+        //const roomId = 'ABCDEF';
 
         if (roomId)
             setId(roomId);
