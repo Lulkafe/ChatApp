@@ -3,6 +3,8 @@ import { useReducer } from 'react';
 import { initState, Reducer, ACTION } from './reducer';
 import { io } from 'socket.io-client';
 
+const testServerDomain = 'http://localhost:3000';
+
 export const App = () => {
 
     const [socket, setSocket] = useState(null);
@@ -10,7 +12,7 @@ export const App = () => {
 
     useEffect(() => {
         console.log('Inside UseEffect');
-        let soc = io('http://localhost:3000');
+        let soc = io(testServerDomain);
         setSocket(soc);
 
         soc.on('chat message', function(msg) {
@@ -22,11 +24,13 @@ export const App = () => {
         <div>
             <div className='test__massage-field'>
                 <ul className='test__message-list'>
-                   <li>Text Message appears below</li> 
+                   <li>Chat Messages will appear below</li> 
                    { state.messages.map((message, i) => <li key={i}>{message}</li>)}
                 </ul>
             </div>
             <MessageField socket={socket} />
+            <RoomIDFieldForGuest/>
+            <RoomIDFieldForHost/>
         </div>
     )
 }
@@ -36,17 +40,15 @@ const MessageField = (props) => {
     const { socket} = props;
   
     const onSubmit = (e) => {
-        console.log('Submitted..');
         e.preventDefault();
         const inputElem = document.getElementById('input');
         const text = (inputElem as HTMLInputElement).value;
    
         if (text && socket) {
-            console.log('Text and socket are both available. sending message...')
             socket.emit('chat message', text);
             (inputElem as HTMLInputElement).value = '';
         } else {
-            console.log('text or socket is missing');
+            console.log('text or a socket instance is missing');
         }
     }
 
@@ -73,10 +75,11 @@ const RoomIDFieldForGuest = () => {
             (document.getElementById(inputId) as HTMLInputElement).value;
 
         const response: Response =
-            await fetch('http://localhost:3000/', {
+            await fetch(`${testServerDomain}/api/roomID`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({ roomId: input })
             });
@@ -102,6 +105,7 @@ const RoomIDFieldForGuest = () => {
 const RoomIDFieldForHost = () => {
 
     const [id, setId] = useState('');
+    const placeholder = 'Room# will appear here';
 
     const onClick = async () => {
         //In real implementation,
@@ -111,18 +115,18 @@ const RoomIDFieldForHost = () => {
         //Return (success): id (string)
         //       (failure): null 
 
-        const response: Response = await fetch('http://localhost:3000/api/roomID');
-        const { roomId } = await response.json();
-        //const roomId = 'ABCDEF';
+        const response: Response = await fetch(`${testServerDomain}/api/roomID`);
+        const { roomID } = await response.json();
 
-        if (roomId)
-            setId(roomId);
+        if (roomID)
+            setId(roomID);
     }
 
     return (
         <div>
-            <input type='input' readOnly id='input__roomID' value={id}></input>
-            <button type='button'>Reserve</button>
+            <input type='input' readOnly id='input__roomID' 
+                value={id} placeholder={placeholder}></input>
+            <button type='button' onClick={onClick}>Reserve</button>
         </div>
     )
 }

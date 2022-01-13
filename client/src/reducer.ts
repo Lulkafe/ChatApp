@@ -6,7 +6,7 @@ export const initState = {
 export const ACTION = {
     UPDATE: {
         MESSAGE: 'Received a new message', 
-        NEW_ROOM: 'Added a new room'
+        NEW_ROOM: 'Added a new accesible room'
     }
 }
 
