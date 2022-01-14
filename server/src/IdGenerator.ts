@@ -14,7 +14,7 @@ const charTable = (() => {
     return ary;
 })()
 
-export default function generateIds (numOfID: number = 1, IdStrLen: number = 4): string[] {
+export default function generateIds (numOfID: number = 1, IdStrLen: number = 5): string[] {
 	const chars: string[] = charTable;
     const _generateId = () => {
         let id: string = ''

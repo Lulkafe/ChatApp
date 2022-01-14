@@ -17,7 +17,7 @@ export class ChatRoomHandler {
         this.validMin = validMin;
         this.roomArray = [];
         this.roomDic = {};
-        this.roomMax = 10000;
+        this.roomMax = 100;
         this.intervalId = 0;
     }
     
@@ -29,15 +29,17 @@ export class ChatRoomHandler {
             expiredIn: this.validMin,
             roomID: newId
         }
+   
+        return newRoom;
+    }
 
-        //Start watching rooms if there are any
+    private watchNewRoom (room: chatRoom): void {
+       
         if (this.noActiveRoom()) 
             this.intervalId = window.setInterval(this.clearExpiredRooms, 1000);
 
-        this.roomArray.push(newRoom);
-        this.roomDic[newId] = 0;
-            
-        return newRoom;
+        this.roomArray.push(room);
+        this.roomDic[room.roomID] = 0;
     }
     
     public canCreateNewRoom (): boolean {
