@@ -12,13 +12,15 @@ export class ChatRoomHandler {
     private roomDic: {};
     private roomMax: number;
     private intervalId: number;
+    private debug: boolean;
 
-    constructor (validMin : number = 20) {
-        this.validMin = validMin;
-        this.roomArray = [];
-        this.roomDic = {};
-        this.roomMax = 100;
-        this.intervalId = 0;
+    constructor () {
+        this.validMin = 20;   //How long the room is valid
+        this.roomArray = [];  //Keep rooms in FILO order
+        this.roomDic = {};    //For quick access to a room
+        this.roomMax = 10000; 
+        this.intervalId = 0;  //For managing setInterval
+        this.debug = false;
     }
     
     public createNewRoom (): chatRoom {
@@ -47,37 +49,23 @@ export class ChatRoomHandler {
     }
 
     public doesThisRoomExist (roomID: string): boolean {
-        
-        for(const room of this.roomArray) {
-            if(room.roomID === roomID)
-                return true;
-        }
-
-        return false;
+        return roomID in this.roomDic;
     }
 
     private findValidId (): string {
-        let newId = ''
-        let attempt = 0;
-        const ATN_MAX = 10;
-        const QTY = 5;
+        const maxAttempts = 100;
+        const numOfIds = 5;
         
-        while (newId === '' && attempt < ATN_MAX) {
-            let newIdCandidates: string[] = generateIds(QTY);
+        for (let i = 0; i < maxAttempts; i++) {
+            let newIdCandidates: string[] = generateIds(numOfIds);
 
             for (const idCandidate of newIdCandidates) {
                 if (this.isThisIdUnique(idCandidate))
-                    newId = idCandidate;
-                    break;
+                    return idCandidate;
             }
-
-            attempt += 1;
         }
 
-        if (attempt > ATN_MAX)
-            throw new Error(`Could not find a valid room ID within ${attempt} time attempts`)
-
-        return newId;
+        throw new Error(`Could not find a valid room ID`);
     }
 
     private clearExpiredRooms (): void {

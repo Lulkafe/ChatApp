@@ -22,6 +22,10 @@ app.use(cors({
     origin: frontEndOrigin
 }))
 
+app.get('/', (req: Request, res: Response) => {
+    res.sendStatus(200);
+})
+
 //User requests a room ID to server
 app.get('/api/roomID', (req: Request, res: Response) => {
     
@@ -63,3 +67,5 @@ io.on('connection', (socket) => {
 server.listen(3000, () => {
     console.log('Listening on port 3000');
 })
+
+module.exports = server;

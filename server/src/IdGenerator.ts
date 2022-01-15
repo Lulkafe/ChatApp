@@ -25,13 +25,8 @@ export default function generateIds (numOfID: number = 1, IdStrLen: number = 5):
         return id;
     }
     
-    if (numOfID === 1) 
-        return [_generateId()];
-    else {
-        let ids: string[] = [];
-        for (let i = 0; i < numOfID; i++)
-            ids.push(_generateId())
-        return ids;
-    } 
-
+    let ids: string[] = [];
+    for (let i = 0; i < numOfID; i++)
+        ids.push(_generateId())
+    return ids;
 }
