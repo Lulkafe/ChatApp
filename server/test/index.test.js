@@ -8,7 +8,7 @@ afterAll(done => {
 
 test('Get a room ID', (done) => {
     request(server).get('/')
-        .expect(404)
+        .expect(200)
         .end((err, res) => {
             done();
         });

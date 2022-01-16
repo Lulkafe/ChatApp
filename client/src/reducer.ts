@@ -1,12 +1,18 @@
+import { AppState } from './interface';
 
-export const initState = {
-    messages: []
+export const initState: AppState = {
+    activeRooms: [],
+    maxRooms: 5,
+    currentRoom: null
 }
 
 export const ACTION = {
     UPDATE: {
         MESSAGE: 'Received a new message', 
         NEW_ROOM: 'Added a new accesible room'
+    }, 
+    DELETE: {
+        ROOM: 'Removed a room'
     }
 }
 
@@ -15,7 +21,7 @@ export const Reducer = (state, action) => {
 
     switch(action.type) {
         case ACTION.UPDATE.MESSAGE:
-            console.log('Hello')
+            
             return {
                 messages: [...state.messages, action.value]
             }

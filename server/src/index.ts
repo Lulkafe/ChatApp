@@ -4,7 +4,7 @@ const http = require('http');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const server = http.createServer(app);
-const frontEndOrigin = ['http://localhost:5501', 'http://127.0.0.1:5501'];
+const frontEndOrigin = ['http://localhost:5500', 'http://127.0.0.1:5500'];
 const io = require('socket.io')(server, {
     cors: {
         origin: frontEndOrigin,
@@ -13,7 +13,8 @@ const io = require('socket.io')(server, {
 });
 
 import { Request, Response } from 'express';
-import {ChatRoomHandler, chatRoom } from './chatRoomHandler';
+import { ChatRoomHandler } from './chatRoomHandler';
+import { MessageFrame } from './interface';
 const roomHandler = new ChatRoomHandler();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -50,9 +51,9 @@ app.post('/api/roomID', (req: Request, res: Response) => {
 io.on('connection', (socket) => {
     console.log('A user connected');
 
-    socket.on('chat message', (msg) => {
-        console.log('Received a chat message');
-        io.emit('chat message', msg);
+    socket.on('chat message', (msgFrame: MessageFrame) => {
+        console.log(`[NEW MESSAGE] TO: ${msgFrame.roomID}`);
+        io.emit('chat message', msgFrame.message);
     })
 
     socket.on('register room', () => {

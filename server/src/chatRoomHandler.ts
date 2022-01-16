@@ -1,14 +1,9 @@
 import generateIds from './IdGenerator';
-
-export interface chatRoom {
-    createdOn: string,
-    expiredIn: number,
-    roomID: string
-}
+import { ChatRoom } from './interface';
 
 export class ChatRoomHandler {
     private validMin: number;
-    private roomArray: chatRoom[];
+    private roomArray: ChatRoom[];
     private roomDic: {};
     private roomMax: number;
     private intervalId: number;
@@ -23,25 +18,25 @@ export class ChatRoomHandler {
         this.debug = false;
     }
     
-    public createNewRoom (): chatRoom {
+    public createNewRoom (): ChatRoom {
 
         const newId = this.findValidId();
-        let newRoom: chatRoom = {
+        let newRoom: ChatRoom = {
             createdOn: new Date().toISOString(),
             expiredIn: this.validMin,
-            roomID: newId
+            id: newId
         }
    
         return newRoom;
     }
 
-    private watchNewRoom (room: chatRoom): void {
+    private watchNewRoom (room: ChatRoom): void {
        
         if (this.noActiveRoom()) 
             this.intervalId = window.setInterval(this.clearExpiredRooms, 1000);
 
         this.roomArray.push(room);
-        this.roomDic[room.roomID] = 0;
+        this.roomDic[room.id] = 0;
     }
     
     public canCreateNewRoom (): boolean {
@@ -74,7 +69,7 @@ export class ChatRoomHandler {
             const room = this.roomArray[i];
 
             if (this.hasRoomExpired(room)) {
-                delete this.roomDic[room.roomID];
+                delete this.roomDic[room.id];
                 continue;
             }
 
@@ -102,7 +97,7 @@ export class ChatRoomHandler {
         return !(id in this.roomDic);
     }
 
-    private hasRoomExpired (room: chatRoom) {
+    private hasRoomExpired (room: ChatRoom) {
         const currentTime = new Date().getTime();
         const createdTime = new Date(room.createdOn).getTime();
         const lifespan = 1000 * 60 * room.expiredIn; 

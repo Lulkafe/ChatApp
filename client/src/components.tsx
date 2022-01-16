@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useReducer } from 'react';
 import { initState, Reducer, ACTION } from './reducer';
 import { io } from 'socket.io-client';
+import { MessageFrame } from './interface';
 
 const testServerDomain = 'http://localhost:3000';
 
@@ -9,47 +10,55 @@ export const App = () => {
 
     const [socket, setSocket] = useState(null);
     const [state, dispatch] = useReducer(Reducer, initState);
+    const { currentRoom } = state;
 
     useEffect(() => {
-        console.log('Inside UseEffect');
-        let soc = io(testServerDomain);
+        const soc = io(testServerDomain);
         setSocket(soc);
 
-        soc.on('chat message', function(msg) {
+        soc.on('chat message', msg => {
            dispatch({ type: ACTION.UPDATE.MESSAGE, value: msg });
         });
     }, []);
 
     return (
         <div>
-            <div className='test__massage-field'>
-                <ul className='test__message-list'>
-                   <li>Chat Messages will appear below</li> 
-                   { state.messages.map((message, i) => <li key={i}>{message}</li>)}
-                </ul>
-            </div>
-            <MessageField socket={socket} />
+            <ul>
+                <li>Current Room: <span>{ currentRoom? currentRoom.id : 'N/A' }</span></li>
+                <li>Chat Messages will appear below</li> 
+                { currentRoom && 
+                    currentRoom.messages
+                    .map((message, i) => <li key={i}>{message}</li>) }
+            </ul>
+            <ChatMessageInput socket={socket} />
             <RoomIDFieldForGuest/>
             <RoomIDFieldForHost/>
         </div>
     )
 }
 
-const MessageField = (props) => {
+//This Input field only appears when a room displays 
+const ChatMessageInput = (props) => {
 
-    const { socket} = props;
+    const { socket } = props;
   
     const onSubmit = (e) => {
         e.preventDefault();
         const inputElem = document.getElementById('input');
-        const text = (inputElem as HTMLInputElement).value;
-   
-        if (text && socket) {
-            socket.emit('chat message', text);
-            (inputElem as HTMLInputElement).value = '';
-        } else {
-            console.log('text or a socket instance is missing');
+        const text: string = (inputElem as HTMLInputElement).value;
+        const msgFrame:MessageFrame = {
+            message: {
+                text,
+                userName: '',
+                commentedOn: new Date().toISOString()
+            },
+            roomID: ''
         }
+   
+        if (text && socket) 
+            socket.emit('chat message', msgFrame);
+        
+        (inputElem as HTMLInputElement).value = '';
     }
 
     return (
@@ -67,10 +76,7 @@ const RoomIDFieldForGuest = () => {
     const inputId = 'user-input';
     const placeholder = 'Tell me Room #';
     const onClick = async () => {
-        /*
-            send the room # (ID) given by user to the server
-            If the ID exists, the room # is registered in state
-        */
+        
         const input: string = 
             (document.getElementById(inputId) as HTMLInputElement).value;
 
