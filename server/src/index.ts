@@ -49,7 +49,7 @@ app.post('/api/roomID', (req: Request, res: Response) => {
 });
 
 io.on('connection', (socket) => {
-    console.log('A user connected');
+    console.log(`A user connected: ${socket.id}`);
 
     socket.on('chat message', (msgFrame: MessageFrame) => {
         console.log(`[NEW MESSAGE] TO: ${msgFrame.roomID}`);
@@ -60,8 +60,8 @@ io.on('connection', (socket) => {
 
     })
 
-    socket.on('disconnect', (socket) => {
-        console.log('A user disconnected');
+    socket.on('disconnect', () => {
+        console.log(`A user disconnected: ${socket.id}`);
     })
 })
 
