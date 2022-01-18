@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext } from 'react';
 import { useReducer, useContext } from 'react';
 import { initState, Reducer, ACTION } from './reducer';
 import { io } from 'socket.io-client';
-import { MessageFrame } from './interface';
+import { MessageFrame, ChatRoom } from './interface';
 
 const testServerDomain = 'http://localhost:3000';
 const AppContext = createContext(undefined);
@@ -12,7 +12,6 @@ export const App = () => {
     const [socket, setSocket] = useState(null);
     const [state, dispatch] = useReducer(Reducer, initState);
     const { currentRoom, activeRooms } = state;
-
     const onClick = (roomID) => 
         () => dispatch({ type: ACTION.CHANGE.ROOM, value: roomID })
 
@@ -20,8 +19,9 @@ export const App = () => {
         const soc = io(testServerDomain);
         setSocket(soc);
 
-        //From Server
+        //From Server１
         soc.on('chat message', msg => {
+           console.log(msg);
            dispatch({ type: ACTION.ADD.MESSAGE, value: msg }); });
     }, []);
 
@@ -30,8 +30,9 @@ export const App = () => {
             <AppContext.Provider value={{state, dispatch}}>
                 <ul>
                     <li>Current Room: <span>{ currentRoom? currentRoom.id : 'NONE' }</span></li>
-                    {  activeRooms.length > 0 &&
-                       activeRooms.maps((room, i) => {
+                    {  
+                       activeRooms.length > 0 &&
+                       activeRooms.map((room, i) => {
                         return (
                             <li key={`r${i}`}>{room.id}
                                 <button onClick={ onClick(room.id) }>Go</button>
@@ -41,7 +42,7 @@ export const App = () => {
                     <li>Chat Messages will appear below</li> 
                     { currentRoom && 
                       currentRoom.messages
-                        .map((message, i) => <li key={i}>{message}</li>) }
+                        .map((message, i) => <li key={i}>{message.text}</li>) }
                 </ul>
                 <ChatMessageInput socket={socket} />
                 <RoomIDFieldForGuest/>
@@ -55,7 +56,7 @@ export const App = () => {
 const ChatMessageInput = (props) => {
 
     const { socket } = props;
-  
+    const { state, dispatch } = useContext(AppContext);  
     const onSubmit = (e) => {
         e.preventDefault();
         const inputElem = document.getElementById('input');
@@ -66,7 +67,7 @@ const ChatMessageInput = (props) => {
                 userName: '',
                 commentedOn: new Date().toISOString()
             },
-            roomID: ''
+            roomID: state.currentRoom.id
         }
    
         if (text && socket) 
@@ -139,11 +140,16 @@ const RoomIDFieldForHost = () => {
         //const response: Response = await fetch(`${testServerDomain}/api/roomID`);
         //const { roomID } = await response.json();
 
-        const roomID = 'A1234';
+        const newRoom: ChatRoom = {
+            id: 'A1234',
+            messages: [],
+            createdOn: new Date().toISOString(),
+            expiredOn: '20'
+        }
 
-        if (roomID) {
-            setId(roomID);
-            dispatch({ type: ACTION.ADD.ROOM, value: roomID });
+        if (newRoom) {
+            setId(newRoom.id);
+            dispatch({ type: ACTION.ADD.ROOM, value: newRoom });
         }
 
     }

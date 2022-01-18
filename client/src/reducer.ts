@@ -22,13 +22,15 @@ export const ACTION = {
 }
 
 export const Reducer = (state, action) => {
-    console.log(`New event dispatched: ${action}`);
+    console.log(`New event dispatched: ${action.type}`);
 
     switch(action.type) {
         case ACTION.ADD.MESSAGE:
             {
                 const message: Message = action.value;
                 const { currentRoom } = state;
+
+                console.log(currentRoom);
 
                 if (!currentRoom)
                     return state;
@@ -37,6 +39,8 @@ export const Reducer = (state, action) => {
                     ...currentRoom,
                     messages: [...currentRoom.messages.slice(), message]
                 };
+
+                console.log(updatedRoom);
 
                 return {
                     ...state,
@@ -49,13 +53,28 @@ export const Reducer = (state, action) => {
                     })
                 }
             }
+        case ACTION.ADD.ROOM:
+            {
+                const newRoom: ChatRoom = action.value;
+                return {
+                    ...state,
+                    activeRooms: [...state.activeRooms, newRoom]
+                }
+            }
         
         case ACTION.CHANGE.ROOM:
             {
                 const roomID = action.value;
-                
+                const room: ChatRoom = state.activeRooms.find(rm => rm.id === roomID);
+
+                if (!room)
+                    return state;
+
+                return {
+                    ...state, 
+                    currentRoom: room
+                }
             }
-        
         
         default:
             return state;

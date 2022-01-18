@@ -28,6 +28,7 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 //User requests a room ID to server
+//TODO: change 'roomID' to 'newRoom' 
 app.get('/api/roomID', (req: Request, res: Response) => {
     
     console.log('[GET] - /api/roomID');
@@ -42,6 +43,7 @@ app.get('/api/roomID', (req: Request, res: Response) => {
 });
 
 //Guest user inquires(posts to) the server if a room exists
+//TODO: A chatroom obj should return
 app.post('/api/roomID', (req: Request, res: Response) => {
     console.log('[POST] - /api/roomID');
     console.log(req.body);
@@ -53,7 +55,16 @@ io.on('connection', (socket) => {
 
     socket.on('chat message', (msgFrame: MessageFrame) => {
         console.log(`[NEW MESSAGE] TO: ${msgFrame.roomID}`);
-        io.emit('chat message', msgFrame.message);
+        if (msgFrame.roomID) {
+            socket.join(msgFrame.roomID); //TODO: should move to 'enter room later'
+            io.to(msgFrame.roomID).emit('chat message', msgFrame.message);
+        }
+        else
+            io.emit('chat message', msgFrame.message);
+    })
+
+    socket.on('enter room', () => {
+
     })
 
     socket.on('register room', () => {
