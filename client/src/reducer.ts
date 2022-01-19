@@ -21,6 +21,28 @@ export const ACTION = {
     }
 }
 
+export class EventDispatcher {
+    dispatch: Function;
+
+    constructor (dispatch) {
+        this.dispatch = dispatch;
+    }
+
+    public addRoom (room: ChatRoom): void {
+        this.dispatch({ type: ACTION.ADD.ROOM, value: room });
+    }
+
+    public changeRoom (roomID: string): void {
+        this.dispatch({ type: ACTION.CHANGE.ROOM, value: roomID });
+    }
+    
+    public addMessage(message: string): void {
+        this.dispatch({ type: ACTION.ADD.MESSAGE, value: message });
+    }
+
+
+}
+
 export const Reducer = (state, action) => {
     console.log(`New event dispatched: ${action.type}`);
 

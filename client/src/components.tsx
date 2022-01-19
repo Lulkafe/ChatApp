@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { useReducer, useContext } from 'react';
-import { initState, Reducer, ACTION } from './reducer';
+import { initState, Reducer, EventDispatcher } from './reducer';
 import { io } from 'socket.io-client';
 import { MessageFrame, ChatRoom } from './interface';
 
@@ -11,23 +11,24 @@ export const App = () => {
 
     const [socket, setSocket] = useState(null);
     const [state, dispatch] = useReducer(Reducer, initState);
+    const dispatcher: EventDispatcher = new EventDispatcher(dispatch);
     const { currentRoom, activeRooms } = state;
     const onClick = (roomID) => 
-        () => dispatch({ type: ACTION.CHANGE.ROOM, value: roomID })
+        () => dispatcher.changeRoom(roomID);
 
     useEffect(() => {
         const soc = io(testServerDomain);
         setSocket(soc);
 
-        //From Server１
         soc.on('chat message', msg => {
-           console.log(msg);
-           dispatch({ type: ACTION.ADD.MESSAGE, value: msg }); });
+           dispatcher.addMessage(msg);
+        });
+
     }, []);
 
     return (
         <div>
-            <AppContext.Provider value={{state, dispatch}}>
+            <AppContext.Provider value={{state, dispatcher}}>
                 <ul>
                     <li>Current Room: <span>{ currentRoom? currentRoom.id : 'NONE' }</span></li>
                     {  
@@ -56,7 +57,7 @@ export const App = () => {
 const ChatMessageInput = (props) => {
 
     const { socket } = props;
-    const { state, dispatch } = useContext(AppContext);  
+    const { state } = useContext(AppContext);  
     const onSubmit = (e) => {
         e.preventDefault();
         const inputElem = document.getElementById('input');
@@ -67,11 +68,12 @@ const ChatMessageInput = (props) => {
                 userName: '',
                 commentedOn: new Date().toISOString()
             },
-            roomID: state.currentRoom.id
+            roomId: state.currentRoom.id
         }
    
-        if (text && socket) 
+        if (text && socket) {
             socket.emit('chat message', msgFrame);
+        }
         
         (inputElem as HTMLInputElement).value = '';
     }
@@ -127,7 +129,7 @@ const RoomIDFieldForHost = () => {
 
     const [id, setId] = useState('');
     const placeholder = 'Room# will appear here';
-    const { state, dispatch } = useContext(AppContext);
+    const { state, dispatcher } = useContext(AppContext);
 
     const onClick = () => {
         //In real implementation,
@@ -149,7 +151,7 @@ const RoomIDFieldForHost = () => {
 
         if (newRoom) {
             setId(newRoom.id);
-            dispatch({ type: ACTION.ADD.ROOM, value: newRoom });
+            dispatcher.addRoom(newRoom);
         }
 
     }

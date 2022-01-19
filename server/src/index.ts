@@ -54,10 +54,10 @@ io.on('connection', (socket) => {
     console.log(`A user connected: ${socket.id}`);
 
     socket.on('chat message', (msgFrame: MessageFrame) => {
-        console.log(`[NEW MESSAGE] TO: ${msgFrame.roomID}`);
-        if (msgFrame.roomID) {
-            socket.join(msgFrame.roomID); //TODO: should move to 'enter room later'
-            io.to(msgFrame.roomID).emit('chat message', msgFrame.message);
+        console.log(`[NEW MESSAGE] TO: ${msgFrame.roomId}`);
+        if (msgFrame.roomId) {
+            socket.join(msgFrame.roomId); //TODO: should move to 'enter room later'
+            io.to(msgFrame.roomId).emit('chat message', msgFrame.message);
         }
         else
             io.emit('chat message', msgFrame.message);

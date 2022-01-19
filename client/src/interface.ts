@@ -19,5 +19,5 @@ export interface Message {
 
 export interface MessageFrame {
     message: Message,
-    roomID: string
+    roomId: string
 }
