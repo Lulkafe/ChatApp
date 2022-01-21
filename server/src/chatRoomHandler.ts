@@ -7,7 +7,7 @@ export class ChatRoomHandler {
     private roomDic: {};
     private roomMax: number;
     private intervalId: number;
-    private debug: boolean;
+    private watchRooms: boolean;
 
     constructor () {
         this.validMin = 20;   //How long the room is valid
@@ -15,7 +15,7 @@ export class ChatRoomHandler {
         this.roomDic = {};    //For quick access to a room
         this.roomMax = 10000; 
         this.intervalId = 0;  //For managing setInterval
-        this.debug = false;
+        this.watchRooms = true; //
     }
     
     public createNewRoom (): ChatRoom {
@@ -26,21 +26,32 @@ export class ChatRoomHandler {
             expiredIn: this.validMin,
             id: newId
         }
+
+        this.roomArray.push(newRoom);
+        this.roomDic[newRoom.id] = newRoom;
+
+        if (this.watchRooms) {
+            this.intervalId = this.intervalId || 
+             window.setInterval(this.clearExpiredRooms, 1000);
+        }
    
         return newRoom;
     }
 
-    private watchNewRoom (room: ChatRoom): void {
-       
-        if (this.noActiveRoom()) 
-            this.intervalId = window.setInterval(this.clearExpiredRooms, 1000);
+    public _disableWatchRooms (): void {
+        this.watchRooms = false;
+    }
 
-        this.roomArray.push(room);
-        this.roomDic[room.id] = 0;
+    public _enableWatchRooms (): void {
+        this.watchRooms = true;
+    }
+
+    public _getMaxRooms (): number {
+        return this.roomMax;
     }
     
     public canCreateNewRoom (): boolean {
-        return this.roomArray.length <= this.roomMax;
+        return this.roomArray.length < this.roomMax;
     }
 
     public doesThisRoomExist (roomID: string): boolean {
@@ -84,8 +95,7 @@ export class ChatRoomHandler {
             break;
         }
 
-        //No active room so No need to watch rooms
-        if (this.noActiveRoom())
+        if (this.watchRooms && this.noActiveRoom())
             window.clearTimeout(this.intervalId);
     }
 

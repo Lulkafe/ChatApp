@@ -63,12 +63,12 @@ io.on('connection', (socket) => {
             io.emit('chat message', msgFrame.message);
     })
 
-    socket.on('enter room', () => {
-
+    socket.on('enter room', (roomId) => {
+        socket.join(roomId);
     })
 
-    socket.on('register room', () => {
-
+    socket.on('leave room', (roomId) => {
+        socket.leave(roomId);
     })
 
     socket.on('disconnect', () => {
