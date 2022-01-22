@@ -1,3 +1,4 @@
+import { TIMEOUT } from 'dns';
 import generateIds from './IdGenerator';
 import { ChatRoom } from './interface';
 
@@ -6,7 +7,7 @@ export class ChatRoomHandler {
     private roomArray: ChatRoom[];
     private roomDic: {};
     private roomMax: number;
-    private intervalId: number;
+    private timerObj: NodeJS.Timer | null;
     private watchRooms: boolean;
 
     constructor () {
@@ -14,7 +15,7 @@ export class ChatRoomHandler {
         this.roomArray = [];  //Keep rooms in FILO order
         this.roomDic = {};    //For quick access to a room
         this.roomMax = 10000; 
-        this.intervalId = 0;  //For managing setInterval
+        this.timerObj = null;  //For managing setInterval
         this.watchRooms = true; //
     }
     
@@ -31,8 +32,9 @@ export class ChatRoomHandler {
         this.roomDic[newRoom.id] = newRoom;
 
         if (this.watchRooms) {
-            this.intervalId = this.intervalId || 
-             window.setInterval(this.clearExpiredRooms.bind(this), 1000);
+            this.timerObj = this.timerObj || 
+             setInterval(this.clearExpiredRooms.bind(this), 1000);
+            this.timerObj.unref();
         }
    
         return newRoom;
@@ -96,7 +98,7 @@ export class ChatRoomHandler {
         }
 
         if (this.watchRooms && this.noActiveRoom())
-            window.clearTimeout(this.intervalId);
+            clearTimeout(this.timerObj);
     }
 
     private noActiveRoom (): boolean {
