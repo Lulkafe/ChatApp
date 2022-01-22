@@ -14,7 +14,7 @@ const io = require('socket.io')(server, {
 
 import { Request, Response } from 'express';
 import { ChatRoomHandler } from './chatRoomHandler';
-import { MessageFrame } from './interface';
+import { MessageFrame, ChatRoom } from './interface';
 const roomHandler = new ChatRoomHandler();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,23 +29,25 @@ app.get('/', (req: Request, res: Response) => {
 
 //User requests a room ID to server
 //TODO: change 'roomID' to 'newRoom' 
-app.get('/api/roomID', (req: Request, res: Response) => {
+app.get('/api/room/new', (req: Request, res: Response) => {
     
-    console.log('[GET] - /api/roomID');
-    /*
+    console.log('[GET] - /api/room/new');
+    
     if (roomHandler.canCreateNewRoom()) {
-        const newRoom: chatRoom = roomHandler.createNewRoom();
-        res.json(newRoom);
+        try {
+            const newRoom: ChatRoom = roomHandler.createNewRoom();
+            res.json(newRoom);
+        } catch (e) {
+            console.error(e);
+            res.json({ error: `Unexpected error happened` })
+        }
     }
-    */
-
-    res.json({ roomID: '#' });
 });
 
 //Guest user inquires(posts to) the server if a room exists
 //TODO: A chatroom obj should return
-app.post('/api/roomID', (req: Request, res: Response) => {
-    console.log('[POST] - /api/roomID');
+app.post('/api/room/check', (req: Request, res: Response) => {
+    console.log('[POST] - /api/room/check');
     console.log(req.body);
     res.json({ text: 'Received your text'});
 });

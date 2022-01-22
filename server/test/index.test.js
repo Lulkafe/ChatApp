@@ -6,10 +6,29 @@ afterAll(done => {
     done();
 })
 
-test('Get a room ID', (done) => {
-    request(server).get('/')
+test('Get a new room object', (done) => {
+    request(server).get('/api/room/new')
         .expect(200)
+        .expect('Content-Type', /json/)
         .end((err, res) => {
+
+            if (err) {
+                fail();
+                done();
+            }
+
+            const result = res.body;
+
+            if ('error' in result) {
+                fail();
+                done();
+            }
+
+
+            expect('id' in result).toBe(true);
+            expect('messages' in result).toBe(true);
+            expect('createdOn' in result).toBe(true);
+            expect('expiredOn' in result).toBe(true);
             done();
         });
 });
