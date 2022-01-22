@@ -32,7 +32,7 @@ export class ChatRoomHandler {
 
         if (this.watchRooms) {
             this.intervalId = this.intervalId || 
-             window.setInterval(this.clearExpiredRooms, 1000);
+             window.setInterval(this.clearExpiredRooms.bind(this), 1000);
         }
    
         return newRoom;
