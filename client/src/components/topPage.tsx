@@ -1,29 +1,27 @@
-import React, { useState, useEffect, createContext } from 'react';
-import { useReducer, useContext } from 'react';
-import { initState, Reducer, EventDispatcher } from './reducer';
+import React, { useState, useEffect, useReducer, useContext } from 'react';
+import { AppContext } from '../context';
+import { initState, Reducer, EventDispatcher } from '../reducer';
 import { io } from 'socket.io-client';
-import { MessageFrame, ChatRoom } from './interface';
+import { MessageFrame, ChatRoom } from '../interface';
 
 const testServerDomain = 'http://localhost:3000';
-const AppContext = createContext(undefined);
 
 export const App = () => {
 
-    const [socket, setSocket] = useState(null);
     const [state, dispatch] = useReducer(Reducer, initState);
     const dispatcher: EventDispatcher = new EventDispatcher(dispatch);
     const { currentRoom, activeRooms } = state;
-    const onClick = (roomID) => 
-        () => dispatcher.changeRoom(roomID);
+    const onClick = (roomId) => 
+        () => dispatcher.changeRoom(roomId);
 
     useEffect(() => {
         const soc = io(testServerDomain);
-        setSocket(soc);
 
         soc.on('chat message', msg => {
            dispatcher.addMessage(msg);
         });
 
+        dispatcher.addSocket(soc);
     }, []);
 
     return (
@@ -45,7 +43,7 @@ export const App = () => {
                       currentRoom.messages
                         .map((message, i) => <li key={i}>{message.text}</li>) }
                 </ul>
-                <ChatMessageInput socket={socket} />
+                <ChatMessageInput/>
                 <RoomIDFieldForGuest/>
                 <RoomIDFieldForHost/>
             </AppContext.Provider>
@@ -54,10 +52,10 @@ export const App = () => {
 }
 
 //This Input field only appears when a room displays 
-const ChatMessageInput = (props) => {
+const ChatMessageInput = () => {
 
-    const { socket } = props;
-    const { state } = useContext(AppContext);  
+    const { state } = useContext(AppContext); 
+    const { socket } = state; 
     const onSubmit = (e) => {
         e.preventDefault();
         const inputElem = document.getElementById('input');

@@ -3,13 +3,15 @@ import { AppState, ChatRoom, Message } from './interface';
 export const initState: AppState = {
     activeRooms: [],
     maxRooms: 5,
-    currentRoom: null
+    currentRoom: null,
+    socket: null
 }
 
 export const ACTION = {
     ADD: {
         ROOM: 'Add a new accesible room',
-        MESSAGE: 'Add a new message to the current room'
+        MESSAGE: 'Add a new message to the current room',
+        SOCKET: 'Add a new socket'
     },
     UPDATE: {
     }, 
@@ -32,6 +34,10 @@ export class EventDispatcher {
         this.dispatch({ type: ACTION.ADD.ROOM, value: room });
     }
 
+    public addSocket (socket): void {
+        this.dispatch({ type: ACTION.ADD.SOCKET, value: socket });
+    }
+
     public changeRoom (roomID: string): void {
         this.dispatch({ type: ACTION.CHANGE.ROOM, value: roomID });
     }
@@ -52,8 +58,6 @@ export const Reducer = (state, action) => {
                 const message: Message = action.value;
                 const { currentRoom } = state;
 
-                console.log(currentRoom);
-
                 if (!currentRoom)
                     return state;
                 
@@ -61,8 +65,6 @@ export const Reducer = (state, action) => {
                     ...currentRoom,
                     messages: [...currentRoom.messages.slice(), message]
                 };
-
-                console.log(updatedRoom);
 
                 return {
                     ...state,
@@ -81,6 +83,15 @@ export const Reducer = (state, action) => {
                 return {
                     ...state,
                     activeRooms: [...state.activeRooms, newRoom]
+                }
+            }
+        
+        case ACTION.ADD.SOCKET:
+            {
+                const socket = action.value;
+                return {
+                    ...state,
+                    socket
                 }
             }
         

@@ -1,7 +1,8 @@
 export interface AppState {
     activeRooms: ChatRoom [],
     maxRooms: number,
-    currentRoom: ChatRoom | null
+    currentRoom: ChatRoom | null,
+    socket
 }
 
 export interface ChatRoom {
