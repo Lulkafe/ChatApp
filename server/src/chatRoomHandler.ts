@@ -97,7 +97,7 @@ export class ChatRoomHandler {
             break;
         }
 
-        if (this.watchRooms && this.noActiveRoom())
+        if (this.watchRooms && this.noActiveRoom() && this.timerObj)
             clearTimeout(this.timerObj);
     }
 
