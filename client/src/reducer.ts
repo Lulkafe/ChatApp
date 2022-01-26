@@ -13,8 +13,6 @@ export const ACTION = {
         MESSAGE: 'Add a new message to the current room',
         SOCKET: 'Add a new socket'
     },
-    UPDATE: {
-    }, 
     CHANGE: {
         ROOM: 'Change the current room' 
     },

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { MessageFrame } from '../interface';
 import { AppContext } from '../context'
 
@@ -79,6 +79,41 @@ const ChatMessageInput = () => {
                 <input type='text' placeholder="Message" id='input'/>
                 <button type='submit' >Submit</button>
             </form>
+        </div>
+    )
+}
+
+const RoomTimer = (props) => {
+    const { min, sec } = props;
+    const [second, setSecond] = useState(sec);
+    const [minute, setMinute] = useState(min);
+    const [intervalId, setIntervalId] = useState(0);
+    const isTimeUp = () => second == 0 && minute == 0;
+
+    useEffect(() => {
+
+        if (!intervalId)
+            setIntervalId(window.setInterval(() => {
+                
+                if (isTimeUp()) {
+                    window.clearInterval(intervalId);
+                    setIntervalId(0);
+                    //TODO: dispatch DELETE event (?)
+                } else if (second > 0) {
+                    setSecond(second - 1);
+                } else if (min > 0) {
+                    setMinute(minute - 1);
+                    setSecond(59);
+                }
+                    
+            }, 1000))
+
+
+    }, [intervalId, second, minute]);
+
+    return (
+        <div>
+            
         </div>
     )
 }
