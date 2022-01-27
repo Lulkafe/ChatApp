@@ -158,7 +158,51 @@ const RoomIDFieldForHost = () => {
         <div>
             <input type='input' readOnly id='input__roomID' 
                 value={id} placeholder={placeholder}></input>
-            <button type='button' onClick={onClick}>Reserve</button>
+            <button type='button' onClick={onClick}>Make a Room</button>
         </div>
     )
 }
+
+/* ************************************* */
+const Header = () => {
+    return (
+        <header>
+
+        </header>
+    )
+}
+
+const TopPage = () => {
+    return (
+        <div>
+        </div>
+    )
+}
+
+const BlockForHost = () => {
+    return (
+        <div>
+            <p>Need a chatroom? &#128172;</p>
+            <RoomIDFieldForHost />
+        </div>
+    )
+}
+
+const BlockForGuest = () => {
+    return (
+        <div>
+            <p>Are you invited?</p>
+            <RoomIDFieldForHost />
+        </div>
+    )
+}
+
+const BlockForRooms = () => {
+    
+    return (
+        <ul>
+            
+        </ul>
+    )
+}
+
