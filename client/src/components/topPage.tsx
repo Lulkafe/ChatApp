@@ -3,6 +3,7 @@ import { AppContext } from '../context';
 import { initState, Reducer, EventDispatcher } from '../reducer';
 import { io } from 'socket.io-client';
 import { MessageFrame, ChatRoom } from '../interface';
+import useInterval from 'react-useinterval';
 
 const testServerDomain = 'http://localhost:3000';
 
@@ -206,3 +207,39 @@ const BlockForRooms = () => {
     )
 }
 
+
+//TODO: Move to common.tsx
+const RoomTimer = (props) => {
+    const { min, sec } = props;
+    const [second, setSecond] = useState(sec);
+    const [minute, setMinute] = useState(min);
+    const [ticking, setTicking] = useState(true);
+
+    useInterval(() => {
+        
+        if (second == 0 && minute == 0) {
+            setTicking(false);
+            //TODO: dispatch EXPIRE event
+        } else if (second > 0) {
+            setSecond(second - 1);
+        } else if (minute > 0) {
+            setMinute(minute - 1);
+            setSecond(59);
+        }
+    }, ticking? 1000 : null);
+
+    return (
+        <span>
+            {minute}:{second}
+        </span>
+    )
+}
+
+
+//TODO: Delete when unnecessary
+export const Test = () => {
+
+    return (
+        <p>Test: <RoomTimer min={0} sec={5}/></p>
+    )
+}
