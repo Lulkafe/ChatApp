@@ -5,7 +5,7 @@ import { AppContext } from '../context';
 import { initState, Reducer, EventDispatcher } from '../reducer';
 import { io } from 'socket.io-client';
 import { MessageFrame, ChatRoom } from '../interface';
-import { Timer } from '../components/common'; 
+import { Timer, Header } from '../components/common'; 
 
 const testServerDomain = 'http://localhost:3000';
 
@@ -167,17 +167,69 @@ const RoomIDFieldForHost = () => {
 }
 
 /* ************************************* */
-const Header = () => {
-    return (
-        <header>
+const ChatApp = () => {
+    const [state, dispatch] = useReducer(Reducer, initState);
+    const dispatcher: EventDispatcher = new EventDispatcher(dispatch);
 
-        </header>
+    useEffect(() => {
+        const soc = io(testServerDomain);
+
+        soc.on('chat message', msg => {
+           dispatcher.addMessage(msg);
+        });
+
+        dispatcher.addSocket(soc);
+    }, []);
+
+    return (
+        <div>
+            <AppContext.Provider value={{state, dispatcher}}>
+                <TopPage />
+            </AppContext.Provider>
+        </div>
     )
 }
+
 
 const TopPage = () => {
     return (
         <div>
+            <Header/>
+            <TopPageBody>
+                <Explanation/>
+                <ContentContainer>
+                    <BlockForHost />
+                    <hr/>
+                    <BlockForGuest />
+                    <hr/>
+                    <BlockForRooms />
+                </ContentContainer>
+            </TopPageBody>
+        </div>
+    )
+}
+
+const TopPageBody = (props) => {
+    return (
+        <div className='toppage-body-container'>
+            { props.children }
+        </div>
+    )
+}
+
+const Explanation = () => {
+    return (
+        <div>
+            <h1>No Sign-up. No Login.</h1>
+            <h3>Chat history is deleted in an hour.</h3>
+        </div>
+    )
+}
+
+const ContentContainer = (props) => {
+    return (
+        <div>
+            { props.children }
         </div>
     )
 }
@@ -195,7 +247,7 @@ const BlockForGuest = () => {
     return (
         <div>
             <p>Are you invited?</p>
-            <RoomIDFieldForHost />
+            <RoomIDFieldForGuest />
         </div>
     )
 }
@@ -213,7 +265,5 @@ const BlockForRooms = () => {
 //TODO: Delete when unnecessary
 export const Test = () => {
 
-    return (
-        <p>Test: <Timer min={60}/></p>
-    )
+    return <ChatApp />
 }

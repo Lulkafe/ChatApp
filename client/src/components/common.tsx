@@ -31,3 +31,11 @@ export const Timer = (props) => {
         </span>
     )
 }
+
+export const Header = () => {
+    return (
+        <header className='site-header'>
+
+        </header>
+    )
+}
