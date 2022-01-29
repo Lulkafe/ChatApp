@@ -1,3 +1,5 @@
+/** Chat room page **/
+
 import React, { useContext, useEffect, useState } from 'react'
 import { MessageFrame } from '../interface';
 import { AppContext } from '../context'
