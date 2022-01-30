@@ -196,7 +196,7 @@ const TopPage = () => {
         <div>
             <Header/>
             <TopPageBody>
-                <Explanation/>
+                <MessageToUser/>
                 <ContentContainer>
                     <BlockForHost />
                     <hr/>
@@ -217,7 +217,7 @@ const TopPageBody = (props) => {
     )
 }
 
-const Explanation = () => {
+const MessageToUser = () => {
     return (
         <div>
             <h1>No Sign-up. No Login.</h1>
