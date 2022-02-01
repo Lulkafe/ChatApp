@@ -33,9 +33,5 @@ export const Timer = (props) => {
 }
 
 export const Header = () => {
-    return (
-        <header className='site-header'>
-
-        </header>
-    )
+    return <header className='site-header'></header>
 }
