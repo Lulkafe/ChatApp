@@ -44,6 +44,18 @@ app.get('/api/room/new', (req: Request, res: Response) => {
     }
 });
 
+//TODO: test if this API (io...get(roomID).size) works
+app.post('/api/room/size', (req: Request, res: Response) => {
+    console.log('[POST] - /api/room/size');
+    const roomId = req.body.roomId;
+    let roomSize = null;
+
+    if (roomHandler.doesThisRoomExist(roomId))
+        roomSize = io.sockets.adapter.rooms.get(roomId).size
+    
+    res.json({ size: roomSize });
+})
+
 //Guest user inquires(posts to) the server if a room exists
 //TODO: A chatroom obj should return
 app.post('/api/room/check', (req: Request, res: Response) => {
@@ -51,6 +63,9 @@ app.post('/api/room/check', (req: Request, res: Response) => {
     console.log(req.body);
     res.json({ text: 'Received your text'});
 });
+
+
+
 
 io.on('connection', (socket) => {
     console.log(`A user connected: ${socket.id}`);

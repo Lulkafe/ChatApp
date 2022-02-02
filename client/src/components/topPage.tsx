@@ -43,8 +43,10 @@ const RoomIDFieldForGuest = () => {
 
     return (
         <div>
-            <input type='text' placeholder={placeholder} id={inputId}></input>
-            <button type='button' onClick={onClick}>Confirm</button>
+            <input type='text' placeholder={placeholder} 
+                id={inputId} className='guest__id-input'></input>
+            <button type='button' onClick={onClick}
+                className='guest__submit-button'>Enter</button>
         </div>
     )
 }
@@ -83,8 +85,10 @@ const RoomIDFieldForHost = () => {
     return (
         <div>
             <input type='input' readOnly id='input__roomID' 
+                className='host__input'
                 value={id} placeholder={placeholder}></input>
-            <button type='button' onClick={onClick}>Make a Room</button>
+            <button type='button' onClick={onClick}
+                className='host__get-button'>Make a Room</button>
         </div>
     )
 }
@@ -151,7 +155,7 @@ const MessageToUser = () => {
 
 const ContentContainer = (props) => {
     return (
-        <div>
+        <div className='content-container'>
             { props.children }
         </div>
     )
@@ -159,8 +163,8 @@ const ContentContainer = (props) => {
 
 const BlockForHost = () => {
     return (
-        <div>
-            <p>Need a chatroom? &#128172;</p>
+        <div className='host__container'>
+            <p className='host__message'>Need a chatroom? &#128172;</p>
             <RoomIDFieldForHost />
         </div>
     )
@@ -168,8 +172,8 @@ const BlockForHost = () => {
 
 const BlockForGuest = () => {
     return (
-        <div>
-            <p>Are you invited?</p>
+        <div className='guest__container'>
+            <p className='guest__message'>Are you invited?</p>
             <RoomIDFieldForGuest />
         </div>
     )

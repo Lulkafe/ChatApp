@@ -16,6 +16,9 @@ export const ACTION = {
     CHANGE: {
         ROOM: 'Change the current room' 
     },
+    EXPIRE: {
+        ROOM: 'A room has expired'
+    },
     DELETE: {
         ROOM: 'Remove a room'
     }
@@ -30,6 +33,10 @@ export class EventDispatcher {
 
     public addRoom (room: ChatRoom): void {
         this.dispatch({ type: ACTION.ADD.ROOM, value: room });
+    }
+
+    public deleteRoom (room: ChatRoom): void {
+        this.dispatch({ type: ACTION.DELETE.ROOM, value: room });
     }
 
     public addSocket (socket): void {

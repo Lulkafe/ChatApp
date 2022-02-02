@@ -3,11 +3,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { MessageFrame } from '../interface';
 import { AppContext } from '../context'
+import { Header } from '../components/common';
 
 const ChatRoomPage = () => {
     return (
         <div>
-
+            <Header/>
+            <StatusBar/>
+            <ChatMsgContainer/>
+            <ChatMessageInput/>
         </div>
     )
 }
@@ -28,11 +32,11 @@ const StatusBar = (props) => {
 
 const ChatMsgContainer = () => {
 
+    const { state, dispatcher } = useContext(AppContext);
+    
     //TODO: Add a feature to align speech balloons to left or right
-
     return (
         <div>
-
         </div>
     )
 }
@@ -57,6 +61,7 @@ const ChatMessageInput = () => {
         e.preventDefault();
         const inputElem = document.getElementById('input');
         const text: string = (inputElem as HTMLInputElement).value;
+        
         const msgFrame:MessageFrame = {
             message: {
                 text,
