@@ -182,9 +182,32 @@ const BlockForGuest = () => {
 const BlockForRooms = () => {
     
     return (
-        <ul>
-            
+        <ul className='room-list'>
+            <li><RoomTag/></li>
         </ul>
+    )
+}
+
+const RoomTag = (props) => {
+    
+    const min = props.min | 60;
+    const sec = props.sec | 0;
+    const roomId = props.roomId || 'N/A';
+
+    return (
+        <div className='room-tag'> 
+            <span className='room-tag__indicator'></span>
+            <span className='room-tag__info-container'>
+                <div className='room-tag__room-wrapper'>
+                    <p className='room-tag__header'>Room #</p>
+                    <p className='room-tag__value'><b>FA1AD</b></p>
+                </div>
+                <div className='room-tag__time-wrapper'>
+                    <p className='room-tag__header'>Deleted in</p>
+                    <b><Timer className='room-tag__value'/></b>
+                </div>
+            </span>
+        </div>
     )
 }
 

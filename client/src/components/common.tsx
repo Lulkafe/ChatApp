@@ -6,7 +6,7 @@ import useInterval from 'react-useinterval';
 export const Timer = (props) => {
     const onExpired = props.onExpired;
     const [second, setSecond] = useState(props.sec | 0);
-    const [minute, setMinute] = useState(props.min | 0);
+    const [minute, setMinute] = useState(props.min | 60);
     const [ticking, setTicking] = useState(true);
     const pad0 = (n: number) => n.toString().padStart(2, '0');
 
