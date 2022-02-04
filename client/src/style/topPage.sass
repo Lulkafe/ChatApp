@@ -19,10 +19,35 @@
     margin: 0 0 0.5rem 0
 
 .content-container
-    max-width: 510px
+    width: 510px
+    display: inline-block
     margin: 0 auto
     background-color: #FAFAFA
+    border-radius: 12px
+    padding: 3rem 3rem 3rem 3rem
+    border: 1px solid #979797   
+    position: relative 
     
+.content-container::before
+    content: ""
+    position: absolute
+    z-index: 256
+    top: 99.7%
+    right: 70%
+    border: solid 30px
+    display: inline-block
+    border-color: #FAFAFA transparent transparent transparent
+
+.content-container::after
+    content: ""
+    position: absolute
+    z-index: 255
+    top: 100%
+    right: 70%
+    border: solid 30px
+    display: inline-block
+    border-color: #aba8a8 transparent transparent transparent
+
 .guest__container
     padding: 2.5rem 0 2.5rem 0
     
@@ -42,7 +67,7 @@
     background-color: #5DBDFF
 
 .host__container
-    padding: 2.5rem 0 2.5rem 0
+    padding: 0 0 2.5rem 0
 
 .host__input
     @include button-shape
@@ -66,6 +91,9 @@
 .room-list
     list-style-type: none
     padding: 0
+
+.room__message
+    @include header-style
 
 .room-tag
     border: 1px solid #979797    
@@ -101,3 +129,5 @@
     display: inline-block
     width: 50%
 
+.toppage-body-container
+    text-align: center

@@ -181,10 +181,16 @@ const BlockForGuest = () => {
 
 const BlockForRooms = () => {
     
+    //TODO
+    //Show a list of rooms based on the current state
+
     return (
-        <ul className='room-list'>
-            <li><RoomTag/></li>
-        </ul>
+        <div>
+            <p className='room__message'>Rooms</p>
+            <ul className='room-list'>
+                <li><RoomTag/></li>
+            </ul>
+        </div>
     )
 }
 
