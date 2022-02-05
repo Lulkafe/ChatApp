@@ -1,5 +1,3 @@
-/** Common reusable components **/
-
 import React, { useState } from 'react';
 import useInterval from 'react-useinterval';
 
@@ -35,3 +33,4 @@ export const Timer = (props) => {
 export const Header = () => {
     return <header className='site-header'></header>
 }
+

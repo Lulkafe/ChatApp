@@ -6,6 +6,7 @@ import { initState, Reducer, EventDispatcher } from '../reducer';
 import { io } from 'socket.io-client';
 import { MessageFrame, ChatRoom } from '../interface';
 import { Timer, Header } from '../components/common'; 
+import { ChatRoomPage } from '../components/chatRoom';
 
 const testServerDomain = 'http://localhost:3000';
 
@@ -111,7 +112,8 @@ const ChatApp = () => {
     return (
         <div>
             <AppContext.Provider value={{state, dispatcher}}>
-                <TopPage />
+                <TopPage/>
+                {/* <ChatRoomPage /> */}
             </AppContext.Provider>
         </div>
     )
@@ -183,12 +185,23 @@ const BlockForRooms = () => {
     
     //TODO
     //Show a list of rooms based on the current state
+    const { state, dispatcher } = useContext(AppContext);
+    const { activeRooms } = state;
 
     return (
-        <div>
-            <p className='room__message'>Rooms</p>
+        <div className='room__container'>
+            <p className='room__header'>Rooms</p>
             <ul className='room-list'>
-                <li><RoomTag/></li>
+                { activeRooms.length > 0? 
+                  activeRooms.map(room => {
+                     return (
+                        <li>
+                            <RoomTag roomId={room.roomId}/>
+                        </li>
+                     )
+                  }) :
+                  <p className='room__message'>No room is available now..</p>
+                }
             </ul>
         </div>
     )
@@ -222,4 +235,5 @@ const RoomTag = (props) => {
 export const Test = () => {
 
     return <ChatApp />
+    
 }
