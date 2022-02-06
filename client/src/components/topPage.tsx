@@ -7,6 +7,7 @@ import { io } from 'socket.io-client';
 import { MessageFrame, ChatRoom } from '../interface';
 import { Timer, Header } from '../components/common'; 
 import { ChatRoomPage } from '../components/chatRoom';
+import { calcTimeDiff } from '../util';
 
 const testServerDomain = 'http://localhost:3000';
 
@@ -193,12 +194,14 @@ const BlockForRooms = () => {
             <p className='room__header'>Rooms</p>
             <ul className='room-list'>
                 { activeRooms.length > 0? 
-                  activeRooms.map(room => {
-                     return (
+                  activeRooms.map((room: ChatRoom) => {
+                    
+
+                    return (
                         <li>
-                            <RoomTag roomId={room.roomId}/>
+                            <RoomTag roomId={room.id}/>
                         </li>
-                     )
+                    )
                   }) :
                   <p className='room__message'>No room is available now..</p>
                 }

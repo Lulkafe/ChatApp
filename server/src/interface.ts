@@ -1,6 +1,6 @@
 export interface ChatRoom {
     createdOn: string,
-    expiredIn: number,
+    expiredOn: string,
     id: string
 }
 

@@ -1,9 +1,7 @@
-export function getTimeDiff (startIsoTime: string, endIsoTime: string) {
+export function calcTimeDiff (startIsoTime: string, endIsoTime: string) {
     const diff = new Date(endIsoTime).getTime() - new Date(startIsoTime).getTime();
-}
-
-function convertTimeIntoMinSec (time: number) {
-    const min = Math.floor(time / 1000);
-    const sec = Math.floor((time / 1000) - (min * 60));
-    return { min, sec };
+    const seconds = diff / 1000;
+    const minDiff = Math.floor(seconds / 60);
+    const secDiff = Math.floor(seconds - (minDiff * 60));
+    return { min: minDiff, sec: secDiff };
 }

@@ -22,9 +22,12 @@ export class ChatRoomHandler {
     public createNewRoom (): ChatRoom {
 
         const newId = this.findValidId();
+        const currentTime = new Date();
+        const expiredTime = new Date (currentTime.getTime() + (this.validMin * 60000));
+
         let newRoom: ChatRoom = {
-            createdOn: new Date().toISOString(),
-            expiredIn: this.validMin,
+            createdOn: currentTime.toISOString(),
+            expiredOn: expiredTime.toISOString(),
             id: newId
         }
 
@@ -112,8 +115,7 @@ export class ChatRoomHandler {
     private hasRoomExpired (room: ChatRoom) {
         const currentTime = new Date().getTime();
         const createdTime = new Date(room.createdOn).getTime();
-        const lifespan = 1000 * 60 * room.expiredIn; 
     
-        return (currentTime - createdTime) > lifespan? true : false;
+        return (currentTime - createdTime) <= 0? true : false;
     }
 }

@@ -10,7 +10,7 @@ test('Create Rooms up to maximum', () => {
     for (let i = 0; i < roomLimit; i++) {
         const newRoom = handler.createNewRoom();
         expect(typeof newRoom.id).toBe('string');
-        expect(typeof newRoom.expiredIn).toBe('number');
+        expect(typeof newRoom.expiredOn).toBe('string');
         expect(typeof newRoom.createdOn).toBe('string');
         generatedRooms.push(newRoom);
     }

@@ -26,7 +26,7 @@ test('Get a new room object', (done) => {
 
             expect('id' in result).toBe(true);
             expect('createdOn' in result).toBe(true);
-            expect('expiredIn' in result).toBe(true);
+            expect('expiredOn' in result).toBe(true);
             done();
         });
 });
