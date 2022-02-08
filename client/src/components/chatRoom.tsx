@@ -3,13 +3,19 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { MessageFrame } from '../interface';
 import { AppContext } from '../context'
-import { Header } from '../components/common';
+import { Header, Timer } from '../components/common';
 
 export const ChatRoomPage = () => {
+
+
     return (
         <div>
             <Header/>
-            <StatusBar/>
+            <StatusBar 
+                roomId={'ABCDE'}
+                participants={6}
+                remainingTime={ {min: 50, sec: 0} }
+                />
             <ChatMsgContainer/>
             <ChatMessageInput/>
         </div>
@@ -21,10 +27,12 @@ const StatusBar = (props) => {
     const { roomId, participants, remainingTime } = props; 
 
     return (
-        <div>
-            <span></span>
-            <span>{participants}</span>
-            <span>Closed in { remainingTime }</span>
+        <div className='status-bar'>
+            <div className='status-bar__content-wrapper'>
+                <span className='status-bar__roomId'>&#128273;{roomId}</span>
+                <span className='status-bar__participants'>&#129485;{participants}</span>
+                <span className='status-bar__timer'>Deleted in <Timer /></span>
+            </div>
         </div>
     )
 }

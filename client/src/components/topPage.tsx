@@ -113,8 +113,8 @@ const ChatApp = () => {
     return (
         <div>
             <AppContext.Provider value={{state, dispatcher}}>
-                <TopPage/>
-                {/* <ChatRoomPage /> */}
+                {/* <TopPage/> */}
+                <ChatRoomPage />
             </AppContext.Provider>
         </div>
     )
