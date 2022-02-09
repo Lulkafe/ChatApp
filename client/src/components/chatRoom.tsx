@@ -65,12 +65,14 @@ const ChatMessageInput = () => {
 
     const { state } = useContext(AppContext); 
     const { socket } = state; 
+    const textFieldId = 'input';
+    const nameFieldId = 'name'
     const onSubmit = (e) => {
         e.preventDefault();
-        const inputElem = document.getElementById('input');
+        const inputElem = document.getElementById(textFieldId);
         const text: string = (inputElem as HTMLInputElement).value;
 
-        const msgFrame:MessageFrame = {
+        const msgFrame: MessageFrame = {
             message: {
                 text,
                 userName: '',
@@ -89,46 +91,15 @@ const ChatMessageInput = () => {
     return (
         <div>
             <form onSubmit={onSubmit}>
-                <input type='text' placeholder='Name (optional)' /> 
+                <input type='text' placeholder='Name (optional)' 
+                    id={nameFieldId} className='input__user-name'/> 
                 <br />
-                <input type='text' placeholder="Message" id='input'/>
-                <button type='submit' >Submit</button>
+                <textarea placeholder="Message" 
+                    id={textFieldId} className='input__user-text'/>
+                <div className='input__button-wrapper'>
+                    <button type='submit' className='input__submit-button'>Submit</button>
+                </div>
             </form>
-        </div>
-    )
-}
-
-const RoomTimer = (props) => {
-    const { min, sec } = props;
-    const [second, setSecond] = useState(sec);
-    const [minute, setMinute] = useState(min);
-    const [intervalId, setIntervalId] = useState(0);
-    const isTimeUp = () => second == 0 && minute == 0;
-
-    useEffect(() => {
-
-        if (!intervalId)
-            setIntervalId(window.setInterval(() => {
-                
-                if (isTimeUp()) {
-                    window.clearInterval(intervalId);
-                    setIntervalId(0);
-                    //TODO: dispatch DELETE event (?)
-                } else if (second > 0) {
-                    setSecond(second - 1);
-                } else if (min > 0) {
-                    setMinute(minute - 1);
-                    setSecond(59);
-                }
-                    
-            }, 1000))
-
-
-    }, [intervalId, second, minute]);
-
-    return (
-        <div>
-            
         </div>
     )
 }
