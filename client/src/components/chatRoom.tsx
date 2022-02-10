@@ -16,8 +16,10 @@ export const ChatRoomPage = () => {
                 participants={6}
                 remainingTime={ {min: 50, sec: 0} }
                 />
-            <ChatMsgContainer/>
-            <ChatMessageInput/>
+            <ChatPageBody>
+                <ChatMsgContainer/>
+                <ChatMessageInput/>
+            </ChatPageBody>
         </div>
     )
 }
@@ -37,6 +39,14 @@ const StatusBar = (props) => {
     )
 }
 
+const ChatPageBody = (props) => {
+    return (
+        <div className='chat-page__body'>
+            { props.children }
+        </div>
+    )
+}
+
 
 const ChatMsgContainer = () => {
 
@@ -44,7 +54,7 @@ const ChatMsgContainer = () => {
     
     //TODO: Add a feature to align speech balloons to left or right
     return (
-        <div>
+        <div className='chat-msg-container'>                
         </div>
     )
 }
@@ -89,17 +99,15 @@ const ChatMessageInput = () => {
     }
 
     return (
-        <div>
-            <form onSubmit={onSubmit}>
-                <input type='text' placeholder='Name (optional)' 
-                    id={nameFieldId} className='input__user-name'/> 
-                <br />
-                <textarea placeholder="Message" 
-                    id={textFieldId} className='input__user-text'/>
-                <div className='input__button-wrapper'>
-                    <button type='submit' className='input__submit-button'>Submit</button>
-                </div>
-            </form>
-        </div>
+        <form onSubmit={onSubmit}>
+            <input type='text' placeholder='Name (optional)' 
+                id={nameFieldId} className='input__user-name'/> 
+            <br />
+            <textarea placeholder="Message" 
+                id={textFieldId} className='input__user-text'/>
+            <div className='input__button-wrapper'>
+                <button type='submit' className='input__submit-button'>Submit</button>
+            </div>
+        </form>
     )
 }
