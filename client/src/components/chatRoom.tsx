@@ -9,7 +9,7 @@ export const ChatRoomPage = () => {
 
 
     return (
-        <div>
+        <div className='chat-page__wrapper'>
             <Header/>
             <StatusBar 
                 roomId={'ABCDE'}
@@ -54,8 +54,9 @@ const ChatMsgContainer = () => {
     
     //TODO: Add a feature to align speech balloons to left or right
     return (
-        <div className='chat-msg-container'>                
-        </div>
+        <div className='chat-msg-container'>       
+              <SpeechBalloon userName='John' message='Are you sure?'/>   
+        </div>   
     )
 }
 
@@ -64,9 +65,9 @@ const SpeechBalloon = (props) => {
     const { userName, message } = props;
 
     return (
-        <div>
-            { userName && <h6>{userName}:</h6>}
-            <p>{message}</p>
+        <div className='speech-balloon'>
+            { userName && <p className='speech-balloon__username'>{userName}:</p>}
+            <p className='speech-balloon__text'>{message}</p>
         </div>
     )
 }
