@@ -100,15 +100,17 @@ const ChatMessageInput = () => {
     }
 
     return (
-        <form onSubmit={onSubmit}>
-            <input type='text' placeholder='Name (optional)' 
-                id={nameFieldId} className='input__user-name'/> 
-            <br />
-            <textarea placeholder="Message" 
-                id={textFieldId} className='input__user-text'/>
-            <div className='input__button-wrapper'>
-                <button type='submit' className='input__submit-button'>Submit</button>
-            </div>
+        <form className='input__form' onSubmit={onSubmit}>
+            
+                <input type='text' placeholder='Name (optional)' 
+                    id={nameFieldId} className='input__user-name'/> 
+                <br />
+                <textarea placeholder="Message" 
+                    id={textFieldId} className='input__user-text'/>
+                <div className='input__button-wrapper'>
+                    <button type='submit' className='input__submit-button'>Submit</button>
+                </div>
+            
         </form>
     )
 }
