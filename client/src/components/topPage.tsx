@@ -24,7 +24,7 @@ const RoomIDFieldForGuest = () => {
             (document.getElementById(inputId) as HTMLInputElement).value;
 
         const response: Response =
-            await fetch(`${testServerDomain}/api/roomID`, {
+            await fetch(`${testServerDomain}/api/room/check`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,8 +36,7 @@ const RoomIDFieldForGuest = () => {
         const result = await response.json();
 
         if (result) {
-            //This room exists (= the guess can access now)
-
+            
         }
 
         (document.getElementById(inputId) as HTMLInputElement).value = '';
@@ -59,7 +58,7 @@ const RoomIDFieldForHost = () => {
     const placeholder = 'Room# will appear here';
     const { state, dispatcher } = useContext(AppContext);
 
-    const onClick = () => {
+    const onClick = async () => {
         //In real implementation,
         //this should count how many IDs have been generated
         //in order to avoid that one user generates too many IDs
@@ -67,16 +66,11 @@ const RoomIDFieldForHost = () => {
         //Return (success): id (string)
         //       (failure): null 
 
-        //const response: Response = await fetch(`${testServerDomain}/api/roomID`);
-        //const { roomID } = await response.json();
+        const response: Response = await fetch(`${testServerDomain}/api/room/new`);
+        const newRoom = await response.json();
 
-        const newRoom: ChatRoom = {
-            id: 'A1234',
-            messages: [],
-            createdOn: new Date().toISOString(),
-            expiredOn: '20'
-        }
-
+        console.log(newRoom)
+                
         if (newRoom) {
             setId(newRoom.id);
             dispatcher.addRoom(newRoom);
@@ -113,8 +107,8 @@ const ChatApp = () => {
     return (
         <div>
             <AppContext.Provider value={{state, dispatcher}}>
-                {/* <TopPage/> */}
-                <ChatRoomPage />
+                <TopPage/>
+                {/* <ChatRoomPage /> */}
             </AppContext.Provider>
         </div>
     )
@@ -184,21 +178,19 @@ const BlockForGuest = () => {
 
 const BlockForRooms = () => {
     
-    //TODO
-    //Show a list of rooms based on the current state
     const { state, dispatcher } = useContext(AppContext);
     const { activeRooms } = state;
+
 
     return (
         <div className='room__container'>
             <p className='room__header'>Rooms</p>
             <ul className='room-list'>
                 { activeRooms.length > 0? 
-                  activeRooms.map((room: ChatRoom) => {
-                    
+                  activeRooms.map((room: ChatRoom, count) => {
 
                     return (
-                        <li>
+                        <li key={`room-key-${count}`}>
                             <RoomTag roomId={room.id}/>
                         </li>
                     )
@@ -222,7 +214,7 @@ const RoomTag = (props) => {
             <span className='room-tag__info-container'>
                 <div className='room-tag__room-wrapper'>
                     <p className='room-tag__header'>Room #</p>
-                    <p className='room-tag__value'><b>FA1AD</b></p>
+                    <p className='room-tag__value'><b>{roomId}</b></p>
                 </div>
                 <div className='room-tag__time-wrapper'>
                     <p className='room-tag__header'>Deleted in</p>

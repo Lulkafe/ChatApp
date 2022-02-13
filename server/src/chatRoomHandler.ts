@@ -11,7 +11,7 @@ export class ChatRoomHandler {
     private watchRooms: boolean;
 
     constructor () {
-        this.validMin = 20;   //How long the room is valid
+        this.validMin = 60;   //How long the room is valid
         this.roomArray = [];  //Keep rooms in FILO order
         this.roomDic = {};    //For quick access to a room
         this.roomMax = 10000; 
@@ -59,8 +59,12 @@ export class ChatRoomHandler {
         return this.roomArray.length < this.roomMax;
     }
 
-    public doesThisRoomExist (roomID: string): boolean {
-        return roomID in this.roomDic;
+    public doesThisRoomExist (roomId: string): boolean {
+        return roomId in this.roomDic;
+    }
+
+    public fetchRoomInfo (roomId: string): ChatRoom {
+        return this.roomDic[roomId];
     }
 
     private findValidId (): string {

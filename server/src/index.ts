@@ -56,12 +56,17 @@ app.post('/api/room/size', (req: Request, res: Response) => {
     res.json({ size: roomSize });
 })
 
-//Guest user inquires(posts to) the server if a room exists
-//TODO: A chatroom obj should return
 app.post('/api/room/check', (req: Request, res: Response) => {
     console.log('[POST] - /api/room/check');
-    console.log(req.body);
-    res.json({ text: 'Received your text'});
+    const { roomId } = req.body;
+
+    if (!roomId)
+        return res.json({ error: 'Room Id not found or given properly' });
+    
+    if (roomHandler.doesThisRoomExist(roomId)) 
+        return res.json({ room: roomHandler.fetchRoomInfo(roomId) });
+
+    res.json({ error: 'Room Not found'});
 });
 
 
