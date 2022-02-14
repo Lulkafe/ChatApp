@@ -7,7 +7,7 @@ import { io } from 'socket.io-client';
 import { MessageFrame, ChatRoom } from '../interface';
 import { Timer, Header } from '../components/common'; 
 import { ChatRoomPage } from '../components/chatRoom';
-import { calcTimeDiff } from '../util';
+import { calcTimeDiff, getCurrentTime } from '../util';
 
 const testServerDomain = 'http://localhost:3000';
 
@@ -16,6 +16,7 @@ export const App = () => {
 
 const RoomIDFieldForGuest = () => {
     
+    const { dispatcher } = useContext(AppContext);
     const inputId = 'user-input';
     const placeholder = 'Tell me Room #';
     const onClick = async () => {
@@ -23,7 +24,8 @@ const RoomIDFieldForGuest = () => {
         const input: string = 
             (document.getElementById(inputId) as HTMLInputElement).value;
 
-        const response: Response =
+        try {
+            const response: Response =
             await fetch(`${testServerDomain}/api/room/check`, {
                 method: 'POST',
                 headers: {
@@ -33,10 +35,19 @@ const RoomIDFieldForGuest = () => {
                 body: JSON.stringify({ roomId: input })
             });
 
-        const result = await response.json();
+            const result = await response.json();
 
-        if (result) {
-            
+            const guestRoom: ChatRoom = {
+                id: result.room.id,
+                createdOn: result.room.createdOn,
+                expiredOn: result.room.expiredOn,
+                messages: []
+            }
+
+            dispatcher.addRoom(guestRoom);
+
+        } catch (e) {
+            //TODO: show an error message to the user
         }
 
         (document.getElementById(inputId) as HTMLInputElement).value = '';
@@ -189,9 +200,11 @@ const BlockForRooms = () => {
                 { activeRooms.length > 0? 
                   activeRooms.map((room: ChatRoom, count) => {
 
+                    const { min, sec } = calcTimeDiff(getCurrentTime(), room.expiredOn);
+
                     return (
                         <li key={`room-key-${count}`}>
-                            <RoomTag roomId={room.id}/>
+                            <RoomTag roomId={room.id} min={min} sec={sec}/>
                         </li>
                     )
                   }) :
@@ -204,8 +217,8 @@ const BlockForRooms = () => {
 
 const RoomTag = (props) => {
     
-    const min = props.min | 60;
-    const sec = props.sec | 0;
+    const min = props.min || 60;
+    const sec = props.sec || 0;
     const roomId = props.roomId || 'N/A';
 
     return (
@@ -218,7 +231,7 @@ const RoomTag = (props) => {
                 </div>
                 <div className='room-tag__time-wrapper'>
                     <p className='room-tag__header'>Deleted in</p>
-                    <b><Timer className='room-tag__value'/></b>
+                    <b><Timer className='room-tag__value' min={min} sec={sec}/></b>
                 </div>
             </span>
         </div>

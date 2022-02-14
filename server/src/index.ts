@@ -62,7 +62,7 @@ app.post('/api/room/check', (req: Request, res: Response) => {
 
     if (!roomId)
         return res.json({ error: 'Room Id not found or given properly' });
-    
+
     if (roomHandler.doesThisRoomExist(roomId)) 
         return res.json({ room: roomHandler.fetchRoomInfo(roomId) });
 

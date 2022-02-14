@@ -21,7 +21,7 @@ test('Get a new room object', done => {
             expect('expiredOn' in result).toBe(true);
 
             newRoomId = result.id;
-            
+
             done();
         });
 });
@@ -41,6 +41,9 @@ test('Check if the new room exists', done => {
         const result = res.body;
 
         expect('room' in result).toBe(true);
+        expect(result.room.id).toBe(newRoomId);
+        expect(typeof result.room.expiredOn).toBe('string');
+        expect(typeof result.room.createdOn).toBe('string');
     
         done();
     });
