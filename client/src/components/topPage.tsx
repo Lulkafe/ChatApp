@@ -7,7 +7,6 @@ import { io } from 'socket.io-client';
 import { MessageFrame, ChatRoom } from '../interface';
 import { Timer, Header } from '../components/common'; 
 import { ChatRoomPage } from '../components/chatRoom';
-import { calcTimeDiff, getCurrentTime } from '../util';
 
 const testServerDomain = 'http://localhost:3000';
 
@@ -192,7 +191,6 @@ const BlockForRooms = () => {
     const { state, dispatcher } = useContext(AppContext);
     const { activeRooms } = state;
 
-
     return (
         <div className='room__container'>
             <p className='room__header'>Rooms</p>
@@ -200,11 +198,9 @@ const BlockForRooms = () => {
                 { activeRooms.length > 0? 
                   activeRooms.map((room: ChatRoom, count) => {
 
-                    const { min, sec } = calcTimeDiff(getCurrentTime(), room.expiredOn);
-
                     return (
                         <li key={`room-key-${count}`}>
-                            <RoomTag roomId={room.id} min={min} sec={sec}/>
+                            <RoomTag room={room}/>
                         </li>
                     )
                   }) :
@@ -217,9 +213,8 @@ const BlockForRooms = () => {
 
 const RoomTag = (props) => {
     
-    const min = props.min || 60;
-    const sec = props.sec || 0;
-    const roomId = props.roomId || 'N/A';
+    const { room }: { room: ChatRoom } = props;
+    const roomId = room.id || 'N/A';
 
     return (
         <div className='room-tag'> 
@@ -231,7 +226,9 @@ const RoomTag = (props) => {
                 </div>
                 <div className='room-tag__time-wrapper'>
                     <p className='room-tag__header'>Deleted in</p>
-                    <b><Timer className='room-tag__value' min={min} sec={sec}/></b>
+                    <b><Timer className='room-tag__value'
+                        startTime={room.createdOn}
+                        endTime={room.expiredOn}/></b>
                 </div>
             </span>
         </div>
