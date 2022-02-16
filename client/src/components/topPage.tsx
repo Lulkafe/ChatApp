@@ -7,6 +7,7 @@ import { io } from 'socket.io-client';
 import { MessageFrame, ChatRoom } from '../interface';
 import { Timer, Header } from '../components/common'; 
 import { ChatRoomPage } from '../components/chatRoom';
+import { hasRoomExpired } from '../util';
 
 const testServerDomain = 'http://localhost:3000';
 
@@ -69,23 +70,17 @@ const RoomIDFieldForHost = () => {
     const { state, dispatcher } = useContext(AppContext);
 
     const onClick = async () => {
-        //In real implementation,
-        //this should count how many IDs have been generated
-        //in order to avoid that one user generates too many IDs
+        const response: Response = 
+            await fetch(`${testServerDomain}/api/room/new`);
+        const newRoomInfo = await response.json();
 
-        //Return (success): id (string)
-        //       (failure): null 
+        if (newRoomInfo) {
+            setId(newRoomInfo.id);
 
-        const response: Response = await fetch(`${testServerDomain}/api/room/new`);
-        const newRoom = await response.json();
-
-        console.log(newRoom)
-                
-        if (newRoom) {
-            setId(newRoom.id);
-            dispatcher.addRoom(newRoom);
+            //Server doesn't keep the user messages
+            //so add a message array here for front-end use 
+            dispatcher.addRoom({...newRoomInfo, messages: []});
         }
-
     }
 
     return (
@@ -117,8 +112,7 @@ const ChatApp = () => {
     return (
         <div>
             <AppContext.Provider value={{state, dispatcher}}>
-                <TopPage/>
-                {/* <ChatRoomPage /> */}
+                { state.currentRoom? <ChatRoomPage/> : <TopPage/> }
             </AppContext.Provider>
         </div>
     )
@@ -188,7 +182,7 @@ const BlockForGuest = () => {
 
 const BlockForRooms = () => {
     
-    const { state, dispatcher } = useContext(AppContext);
+    const { state } = useContext(AppContext);
     const { activeRooms } = state;
 
     return (
@@ -213,12 +207,21 @@ const BlockForRooms = () => {
 
 const RoomTag = (props) => {
     
+    const { dispatcher } = useContext(AppContext);
     const { room }: { room: ChatRoom } = props;
-    const roomId = room.id || 'N/A';
+    const roomId = room.id;
+    const expired = hasRoomExpired(room);
+    const tagClass = 'room-tag ' + 
+        (expired? 'room-tag--expired' : '')
+    const indicatorClass = 'room-tag__indicator ' + 
+        (expired? 'room-tag__indicator--expired' : '');
+    const onClickTag = () => {
+        if (roomId) dispatcher.changeRoom(roomId);
+    }
 
     return (
-        <div className='room-tag'> 
-            <span className='room-tag__indicator'></span>
+        <div className={tagClass} onClick={onClickTag}> 
+            <span className={indicatorClass}></span>
             <span className='room-tag__info-container'>
                 <div className='room-tag__room-wrapper'>
                     <p className='room-tag__header'>Room #</p>

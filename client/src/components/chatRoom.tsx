@@ -1,7 +1,7 @@
 /** Chat room page **/
 
 import React, { useContext, useEffect, useState } from 'react'
-import { MessageFrame } from '../interface';
+import { ChatRoom, MessageFrame } from '../interface';
 import { AppContext } from '../context'
 import { Header, Timer } from '../components/common';
 
@@ -11,11 +11,7 @@ export const ChatRoomPage = () => {
     return (
         <div className='chat-page__wrapper'>
             <Header/>
-            <StatusBar 
-                roomId={'ABCDE'}
-                participants={6}
-                remainingTime={ {min: 50, sec: 0} }
-                />
+            <StatusBar/>
             <ChatPageBody>
                 <ChatMsgContainer/>
                 <ChatMessageInput/>
@@ -26,14 +22,19 @@ export const ChatRoomPage = () => {
 
 const StatusBar = (props) => {
 
-    const { roomId, participants, remainingTime } = props; 
+    const { state, dispatcher } = useContext(AppContext);
+    const curRoom: ChatRoom = state.currentRoom;
+    const roomId = state.currentRoom.id;
+    const participants = 6;
 
     return (
         <div className='status-bar'>
             <div className='status-bar__content-wrapper'>
-                <span className='status-bar__roomId'>&#128273;{roomId}</span>
+                <span className='status-bar__roomId'>&#128273; {roomId}</span>
                 <span className='status-bar__participants'>&#129485;{participants}</span>
-                <span className='status-bar__timer'>Deleted in <Timer /></span>
+                <span className='status-bar__timer'>Deleted in <Timer 
+                      startTime={curRoom.createdOn}
+                      endTime={curRoom.expiredOn}/></span>
             </div>
         </div>
     )
@@ -51,12 +52,17 @@ const ChatPageBody = (props) => {
 const ChatMsgContainer = () => {
 
     const { state, dispatcher } = useContext(AppContext);
+    const { currentRoom } : {currentRoom: ChatRoom } = state;
+
     
     //TODO: Add a feature to align speech balloons to left or right
     return (
         <div className='chat-msg__container'>  
             <div className='chat'>     
-              <SpeechBalloon userName='John' message='Are you sure?'/>  
+              <SpeechBalloon userName='Test' message='Test Message!'/>
+              { currentRoom.messages.map(message => {
+                  return <SpeechBalloon userName='' message={message.text}/>
+              }) }  
             </div> 
         </div>   
     )

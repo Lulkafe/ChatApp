@@ -43,8 +43,8 @@ export class EventDispatcher {
         this.dispatch({ type: ACTION.ADD.SOCKET, value: socket });
     }
 
-    public changeRoom (roomID: string): void {
-        this.dispatch({ type: ACTION.CHANGE.ROOM, value: roomID });
+    public changeRoom (roomId: string): void {
+        this.dispatch({ type: ACTION.CHANGE.ROOM, value: roomId });
     }
     
     public addMessage(message: string): void {
@@ -103,7 +103,8 @@ export const Reducer = (state, action) => {
         case ACTION.CHANGE.ROOM:
             {
                 const roomID = action.value;
-                const room: ChatRoom = state.activeRooms.find(rm => rm.id === roomID);
+                const room: ChatRoom = 
+                    state.activeRooms.find(room => room.id == roomID);
 
                 if (!room)
                     return state;
@@ -113,6 +114,9 @@ export const Reducer = (state, action) => {
                     currentRoom: room
                 }
             }
+        
+        case ACTION.EXPIRE.ROOM:
+            return state;
         
         default:
             return state;

@@ -14,7 +14,7 @@ const io = require('socket.io')(server, {
 
 import { Request, Response } from 'express';
 import { ChatRoomHandler } from './chatRoomHandler';
-import { MessageFrame, ChatRoom } from './interface';
+import { MessageFrame, ChatRoomInfo } from './interface';
 const roomHandler = new ChatRoomHandler();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -35,7 +35,7 @@ app.get('/api/room/new', (req: Request, res: Response) => {
     
     if (roomHandler.canCreateNewRoom()) {
         try {
-            const newRoom: ChatRoom = roomHandler.createNewRoom();
+            const newRoom: ChatRoomInfo = roomHandler.createNewRoom();
             res.json(newRoom);
         } catch (e) {
             console.error(e);
