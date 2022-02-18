@@ -86,6 +86,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('enter room', (roomId) => {
+        console.log(`[ENTER ROOM]: in ${roomId}`);
         socket.join(roomId);
     })
 

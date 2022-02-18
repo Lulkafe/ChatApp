@@ -57,12 +57,16 @@ const ChatMsgContainer = () => {
     
     //TODO: Add a feature to align speech balloons to left or right
     return (
-        <div className='chat-msg__container'>  
-            <div className='chat'>     
-              <SpeechBalloon userName='Test' message='Test Message!'/>
-              { currentRoom.messages.map(message => {
-                  return <SpeechBalloon userName='' message={message.text}/>
-              }) }  
+        <div className='chat-msg__container-shape'>  
+            <div className='chat-msg__container'>     
+                <SpeechBalloon userName='Test' message='Test Message!'/>
+                { currentRoom.messages.map((message, i) => {
+                    return (
+                        <SpeechBalloon
+                            key={`speech-balloon-${i}`} 
+                            userName='' 
+                            message={message.text}/>)
+                }) }  
             </div> 
         </div>   
     )

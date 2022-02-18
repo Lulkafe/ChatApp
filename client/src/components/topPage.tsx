@@ -207,16 +207,19 @@ const BlockForRooms = () => {
 
 const RoomTag = (props) => {
     
-    const { dispatcher } = useContext(AppContext);
+    const { state, dispatcher } = useContext(AppContext);
     const { room }: { room: ChatRoom } = props;
-    const roomId = room.id;
+    const { socket } = state;
     const expired = hasRoomExpired(room);
     const tagClass = 'room-tag ' + 
         (expired? 'room-tag--expired' : '')
     const indicatorClass = 'room-tag__indicator ' + 
         (expired? 'room-tag__indicator--expired' : '');
     const onClickTag = () => {
-        if (roomId) dispatcher.changeRoom(roomId);
+        if (room.id && socket) {
+            dispatcher.changeRoom(room.id);
+            socket.emit('enter room', room.id);
+        } 
     }
 
     return (
@@ -225,7 +228,7 @@ const RoomTag = (props) => {
             <span className='room-tag__info-container'>
                 <div className='room-tag__room-wrapper'>
                     <p className='room-tag__header'>Room #</p>
-                    <p className='room-tag__value'><b>{roomId}</b></p>
+                    <p className='room-tag__value'><b>{room.id}</b></p>
                 </div>
                 <div className='room-tag__time-wrapper'>
                     <p className='room-tag__header'>Deleted in</p>

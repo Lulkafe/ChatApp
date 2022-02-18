@@ -1,10 +1,10 @@
 import { TIMEOUT } from 'dns';
 import generateIds from './IdGenerator';
-import { ChatRoom } from './interface';
+import { ChatRoomInfo } from './interface';
 
 export class ChatRoomHandler {
     private validMin: number;
-    private roomArray: ChatRoom[];
+    private roomArray: ChatRoomInfo[];
     private roomDic: {};
     private roomMax: number;
     private timerObj: NodeJS.Timer | null;
@@ -19,13 +19,13 @@ export class ChatRoomHandler {
         this.watchRooms = true; //
     }
     
-    public createNewRoom (): ChatRoom {
+    public createNewRoom (): ChatRoomInfo {
 
         const newId = this.findValidId();
         const currentTime = new Date();
         const expiredTime = new Date (currentTime.getTime() + (this.validMin * 60000));
 
-        let newRoom: ChatRoom = {
+        let newRoom: ChatRoomInfo = {
             createdOn: currentTime.toISOString(),
             expiredOn: expiredTime.toISOString(),
             id: newId
@@ -63,7 +63,7 @@ export class ChatRoomHandler {
         return roomId in this.roomDic;
     }
 
-    public fetchRoomInfo (roomId: string): ChatRoom {
+    public fetchRoomInfo (roomId: string): ChatRoomInfo {
         return this.roomDic[roomId];
     }
 
@@ -116,7 +116,7 @@ export class ChatRoomHandler {
         return !(id in this.roomDic);
     }
 
-    private hasRoomExpired (room: ChatRoom) {
+    private hasRoomExpired (room: ChatRoomInfo) {
         const currentTime = new Date().getTime();
         const createdTime = new Date(room.createdOn).getTime();
     
