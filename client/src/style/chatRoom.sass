@@ -8,9 +8,10 @@
 
 .chat-msg__container
     max-height: 100%
+    display: flex
+    flex-direction: column
     overflow: scroll
 
-    
 //Wrapper and a speech balloon which contains chat massages
 .chat-msg__container-shape
     width: 100%
@@ -21,7 +22,6 @@
     background: lightgray
     border-radius: 20px
     margin: 15px 0 30px 0
-    //overflow: scroll
     padding: 1.5rem 1rem 1.5rem 1rem
     background-color: #FAFAFA
     border: 1px solid #979797
@@ -94,6 +94,10 @@
     background: #FBFBFB
     padding: 0.5rem 1rem 1rem 1rem
     font-family: Arial, Helvetica, sans-serif
+    align-self: flex-end
+
+.speech-balloon--mine
+    align-self: flex-start
 
 .speech-balloon__username
     margin: 0

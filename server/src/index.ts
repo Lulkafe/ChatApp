@@ -80,9 +80,9 @@ io.on('connection', (socket) => {
 
     socket.on('chat message', (msgFrame: MessageFrame) => {
         console.log(`[NEW MESSAGE] TO: ${msgFrame.roomId}`);
-        if (msgFrame.roomId) {
-            io.to(msgFrame.roomId).emit('chat message', msgFrame.message);
-        }   1   
+
+        if (msgFrame.roomId) 
+            socket.to(msgFrame.roomId).emit('chat message', msgFrame.message);
   
     })
 

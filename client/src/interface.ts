@@ -16,7 +16,8 @@ export interface ChatRoom {
 export interface Message {
     text: string,
     userName: string,
-    commentedOn: string
+    commentedOn: string,
+    isMyComment: boolean
 }
 
 export interface MessageFrame {
