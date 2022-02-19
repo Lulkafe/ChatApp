@@ -81,11 +81,9 @@ io.on('connection', (socket) => {
     socket.on('chat message', (msgFrame: MessageFrame) => {
         console.log(`[NEW MESSAGE] TO: ${msgFrame.roomId}`);
         if (msgFrame.roomId) {
-            socket.join(msgFrame.roomId); //TODO: should move to 'enter room later'
             io.to(msgFrame.roomId).emit('chat message', msgFrame.message);
-        }
-        else
-            io.emit('chat message', msgFrame.message);
+        }   1   
+  
     })
 
     socket.on('enter room', (roomId) => {
@@ -97,6 +95,14 @@ io.on('connection', (socket) => {
     socket.on('leave room', (roomId) => {
         socket.leave(roomId);
         io.to(roomId).emit('update participant', roomId);
+    })
+
+    socket.on('disconnecting', () => {
+        console.log('A user is disconnecting...');
+
+        const joinedRooms = Array.from(socket.rooms).slice(1);
+        for (const joinedRoom of joinedRooms) 
+            io.to(joinedRoom).emit('update participant', joinedRoom);
     })
 
     socket.on('disconnect', () => {

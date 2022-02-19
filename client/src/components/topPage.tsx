@@ -106,7 +106,6 @@ const ChatApp = () => {
     const [state, dispatch] = useReducer(Reducer, initState);
     const dispatcher: EventDispatcher = new EventDispatcher(dispatch);
 
-
     useEffect(() => {
         const soc = io(testServerDomain);
 
@@ -137,7 +136,7 @@ const ChatApp = () => {
         })
 
         dispatcher.addSocket(soc);
-        
+
     }, []);
     
 
