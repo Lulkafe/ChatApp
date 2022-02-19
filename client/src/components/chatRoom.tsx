@@ -24,14 +24,14 @@ const StatusBar = (props) => {
 
     const { state, dispatcher } = useContext(AppContext);
     const curRoom: ChatRoom = state.currentRoom;
-    const roomId = state.currentRoom.id;
-    const participants = 6;
+    const roomId = curRoom.id;
+    const participant = curRoom.participant;
 
     return (
         <div className='status-bar'>
             <div className='status-bar__content-wrapper'>
                 <span className='status-bar__roomId'>&#128273; {roomId}</span>
-                <span className='status-bar__participants'>&#129485;{participants}</span>
+                <span className='status-bar__participants'>&#129485;{participant}</span>
                 <span className='status-bar__timer'>Deleted in <Timer 
                       startTime={curRoom.createdOn}
                       endTime={curRoom.expiredOn}/></span>

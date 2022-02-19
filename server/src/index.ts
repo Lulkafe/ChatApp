@@ -44,15 +44,18 @@ app.get('/api/room/new', (req: Request, res: Response) => {
     }
 });
 
-//TODO: test if this API (io...get(roomID).size) works
 app.post('/api/room/size', (req: Request, res: Response) => {
     console.log('[POST] - /api/room/size');
-    const roomId = req.body.roomId;
+    const { roomId } = req.body;
+    console.log(req.body);
     let roomSize = null;
 
-    if (roomHandler.doesThisRoomExist(roomId))
+    if (roomHandler.doesThisRoomExist(roomId)) {
+        console.log(`Room ${roomId} exists`);
         roomSize = io.sockets.adapter.rooms.get(roomId).size
-    
+    } else
+        console.log(`Room ${roomId} does not exist`);
+
     res.json({ size: roomSize });
 })
 
@@ -88,10 +91,12 @@ io.on('connection', (socket) => {
     socket.on('enter room', (roomId) => {
         console.log(`[ENTER ROOM]: in ${roomId}`);
         socket.join(roomId);
+        io.to(roomId).emit('update participant', roomId);
     })
 
     socket.on('leave room', (roomId) => {
         socket.leave(roomId);
+        io.to(roomId).emit('update participant', roomId);
     })
 
     socket.on('disconnect', () => {

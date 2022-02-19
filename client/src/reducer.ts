@@ -1,3 +1,4 @@
+import { ReducerAction } from 'react';
 import { AppState, ChatRoom, Message } from './interface';
 
 export const initState: AppState = {
@@ -14,7 +15,8 @@ export const ACTION = {
         SOCKET: 'Add a new socket'
     },
     CHANGE: {
-        ROOM: 'Change the current room' 
+        ROOM: 'Change the current room',
+        PARTICIPANT: 'Change the number of participants'
     },
     EXPIRE: {
         ROOM: 'A room has expired'
@@ -51,6 +53,9 @@ export class EventDispatcher {
         this.dispatch({ type: ACTION.ADD.MESSAGE, value: message });
     }
 
+    public updateRoomParticipant(num: number): void {
+        this.dispatch({ type: ACTION.CHANGE.PARTICIPANT, value: num});
+    }
 
 }
 
@@ -112,6 +117,21 @@ export const Reducer = (state, action) => {
                 return {
                     ...state, 
                     currentRoom: room
+                }
+            }
+        
+        case ACTION.CHANGE.PARTICIPANT:
+            {
+                const participant = action.value;
+                if (!participant)
+                    return state;
+                
+                return {
+                    ...state,
+                    currentRoom: {
+                        ...state.currentRoom,
+                        participant
+                    }
                 }
             }
         

@@ -9,7 +9,8 @@ export interface ChatRoom {
     id: string,
     messages: Message [],
     createdOn: string,
-    expiredOn: string
+    expiredOn: string,
+    participant: number
 }
 
 export interface Message {

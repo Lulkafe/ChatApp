@@ -41,7 +41,8 @@ const RoomIDFieldForGuest = () => {
                 id: result.room.id,
                 createdOn: result.room.createdOn,
                 expiredOn: result.room.expiredOn,
-                messages: []
+                messages: [],
+                participant: 0
             }
 
             dispatcher.addRoom(guestRoom);
@@ -78,8 +79,14 @@ const RoomIDFieldForHost = () => {
             setId(newRoomInfo.id);
 
             //Server doesn't keep the user messages
-            //so add a message array here for front-end use 
-            dispatcher.addRoom({...newRoomInfo, messages: []});
+            //so a message array added here for front-end use 
+            const newRoom: ChatRoom = {
+                ...newRoomInfo,
+                messages: [],
+                participant: 0
+            }
+
+            dispatcher.addRoom(newRoom);
         }
     }
 
@@ -99,6 +106,7 @@ const ChatApp = () => {
     const [state, dispatch] = useReducer(Reducer, initState);
     const dispatcher: EventDispatcher = new EventDispatcher(dispatch);
 
+
     useEffect(() => {
         const soc = io(testServerDomain);
 
@@ -106,17 +114,41 @@ const ChatApp = () => {
            dispatcher.addMessage(msg);
         });
 
+        soc.on('update participant', async (roomId) => {
+
+            if (!roomId)
+                return;
+
+            const response: Response =
+                await fetch(`${testServerDomain}/api/room/size`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ roomId })
+                });
+
+            const result = await response.json();
+            
+            if (result && result.size) 
+                dispatcher.updateRoomParticipant(result.size);
+           
+        })
+
         dispatcher.addSocket(soc);
+        
     }, []);
+    
 
     return (
-        <div>
-            <AppContext.Provider value={{state, dispatcher}}>
-                { state.currentRoom? <ChatRoomPage/> : <TopPage/> }
-            </AppContext.Provider>
-        </div>
+        <AppContext.Provider value={{state, dispatcher}}>
+            { state.currentRoom? <ChatRoomPage/> : <TopPage/> }
+        </AppContext.Provider>
+        
     )
 }
+
 
 
 const TopPage = () => {
