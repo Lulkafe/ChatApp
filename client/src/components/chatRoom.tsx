@@ -18,8 +18,8 @@ export const ChatRoomPage = () => {
     )
 }
 
-const StatusBar = (props) => {
-    const { state, dispatcher } = useContext(AppContext);
+const StatusBar = () => {
+    const { state } = useContext(AppContext);
     const curRoom: ChatRoom = state.currentRoom;
     const roomId = curRoom.id;
     const participant = curRoom.participant;
@@ -30,7 +30,7 @@ const StatusBar = (props) => {
                 <span className='status-bar__roomId'>&#128273; {roomId}</span>
                 <span className='status-bar__participants'>&#129485;{participant}</span>
                 <span className='status-bar__timer'>Deleted in <Timer 
-                      startTime={curRoom.createdOn}
+                      startTime={new Date().toISOString()}
                       endTime={curRoom.expiredOn}/></span>
             </div>
         </div>
@@ -54,7 +54,6 @@ const ChatMsgContainer = () => {
     useEffect(() => {
         console.log('useEffect');
         console.log(msgContainerRef.current);
-        //msgContainerRef.current?.scrollIntoView({behavior: "smooth", block: "end"});
         msgContainerRef.current.scrollTop = msgContainerRef.current.scrollHeight;
     }, [state.currentRoom.messages]);
 

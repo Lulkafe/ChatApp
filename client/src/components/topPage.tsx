@@ -264,7 +264,7 @@ const RoomTag = (props) => {
                 <div className='room-tag__time-wrapper'>
                     <p className='room-tag__header'>Deleted in</p>
                     <b><Timer className='room-tag__value'
-                        startTime={room.createdOn}
+                        startTime={new Date().toISOString()}
                         endTime={room.expiredOn}/></b>
                 </div>
             </span>
