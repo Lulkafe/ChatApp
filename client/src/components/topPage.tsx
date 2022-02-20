@@ -8,10 +8,63 @@ import { ChatRoom } from '../interface';
 import { Timer, Header } from '../components/common'; 
 import { ChatRoomPage } from '../components/chatRoom';
 import { hasRoomExpired } from '../util';
+import { Routes, Route, Link } from 'react-router-dom';
 
 const testServerDomain = 'http://localhost:3000';
 
-export const App = () => {
+const Test = () => {
+    return <p>Test!</p>;
+}
+
+export const ChatApp = () => {
+    const [state, dispatch] = useReducer(Reducer, initState);
+    const dispatcher: EventDispatcher = new EventDispatcher(dispatch);
+
+    useEffect(() => {
+        const soc = io(testServerDomain);
+
+        soc.on('chat message', msg => {
+           dispatcher.addMessage(msg);
+        });
+
+        soc.on('update participant', async (roomId) => {
+
+            if (!roomId)
+                return;
+
+            const response: Response =
+                await fetch(`${testServerDomain}/api/room/size`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ roomId })
+                });
+
+            const result = await response.json();
+            
+            if (result && result.size) 
+                dispatcher.updateRoomParticipant(result.size);
+           
+        })
+
+        dispatcher.addSocket(soc);
+
+    }, []);
+    
+    return (
+        <AppContext.Provider value={{state, dispatcher}}>
+            {/* state.currentRoom? <ChatRoomPage/> : <TopPage/> */}
+            <Routes>
+                <Route path="/" element={<TopPage/>}/>
+                { state.activeRooms.map(room => {
+                    return <Route path='/:id' element={<ChatRoomPage/>}/>
+                })}
+            </Routes>
+        </AppContext.Provider>
+        
+    )
 }
 
 const RoomIDFieldForGuest = () => {
@@ -101,55 +154,6 @@ const RoomIDFieldForHost = () => {
     )
 }
 
-/* ************************************* */
-const ChatApp = () => {
-    const [state, dispatch] = useReducer(Reducer, initState);
-    const dispatcher: EventDispatcher = new EventDispatcher(dispatch);
-
-    useEffect(() => {
-        const soc = io(testServerDomain);
-
-        soc.on('chat message', msg => {
-           dispatcher.addMessage(msg);
-        });
-
-        soc.on('update participant', async (roomId) => {
-
-            if (!roomId)
-                return;
-
-            const response: Response =
-                await fetch(`${testServerDomain}/api/room/size`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({ roomId })
-                });
-
-            const result = await response.json();
-            
-            if (result && result.size) 
-                dispatcher.updateRoomParticipant(result.size);
-           
-        })
-
-        dispatcher.addSocket(soc);
-
-    }, []);
-    
-
-    return (
-        <AppContext.Provider value={{state, dispatcher}}>
-            { state.currentRoom? <ChatRoomPage/> : <TopPage/> }
-        </AppContext.Provider>
-        
-    )
-}
-
-
-
 const TopPage = () => {
     return (
         <div>
@@ -225,7 +229,9 @@ const BlockForRooms = () => {
 
                     return (
                         <li key={`room-key-${count}`}>
-                            <RoomTag room={room}/>
+                            <Link to={`/${room.id}`} className='link-tag'>
+                                <RoomTag room={room}/>
+                            </Link>
                         </li>
                     )
                   }) :
@@ -270,12 +276,4 @@ const RoomTag = (props) => {
             </span>
         </div>
     )
-}
-
-
-//TODO: Delete when unnecessary
-export const Test = () => {
-
-    return <ChatApp />
-    
 }

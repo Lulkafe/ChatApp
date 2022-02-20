@@ -47,21 +47,21 @@ const ChatPageBody = (props) => {
 
 
 const ChatMsgContainer = () => {
-    const { state, dispatcher } = useContext(AppContext);
+    const { state } = useContext(AppContext);
     const { currentRoom } : {currentRoom: ChatRoom } = state;
     const msgContainerRef = useRef(null);
 
     useEffect(() => {
-        console.log('useEffect');
-        console.log(msgContainerRef.current);
         msgContainerRef.current.scrollTop = msgContainerRef.current.scrollHeight;
     }, [state.currentRoom.messages]);
 
-    //TODO: Move to the buttom of the div when a new message comes
     return (
         <div className='chat-msg__container-shape'>  
             <div className='chat-msg__container' ref={msgContainerRef}>     
-                { currentRoom.messages.map((message, i) => {
+                { currentRoom.messages.length === 0?
+                    <p className='chat-msg__no-comment-message'>No comment yet..</p>
+                    :
+                    currentRoom.messages.map((message, i) => {
                     return (
                         <SpeechBalloon
                             key={`speech-balloon-${i}`} 
@@ -98,7 +98,7 @@ const ChatMessageInput = () => {
         if (nameInput.value) 
             setUserName(nameInput.value);
 
-        const message: Message = {
+        const msgKeptLocally: Message = {
                 text: textArea.value,
                 userName : nameInput.value,
                 commentedOn: new Date().toISOString(),
@@ -107,7 +107,7 @@ const ChatMessageInput = () => {
 
         const msgToOthers: MessageFrame = {
             message: {
-                ...message,
+                ...msgKeptLocally,
                 isMyComment: false
             },
             roomId: currentRoom.id
@@ -115,7 +115,7 @@ const ChatMessageInput = () => {
         
         if (textArea.value && socket) {
             socket.emit('chat message', msgToOthers);
-            dispatcher.addMessage(message);
+            dispatcher.addMessage(msgKeptLocally);
         }
 
         textArea.value = ''
@@ -127,7 +127,7 @@ const ChatMessageInput = () => {
                 name='username' className='input__user-name'
                 defaultValue={userName}/> 
             <br />
-            <textarea placeholder="Message" name='usertext' 
+            <textarea placeholder="Type here" name='usertext' 
                 className='input__user-text'/>
             <div className='input__button-wrapper'>
                 <button type='submit' className='input__submit-button'>Submit</button>

@@ -1,6 +1,11 @@
 import { render } from 'react-dom';
 import React from 'react';
-import { App, Test } from './components/topPage';
+import { ChatApp } from './components/topPage';
 import './style/style.sass';
+import  {BrowserRouter } from 'react-router-dom';
 
-render(<Test/>, document.getElementById('root'))
+render(
+    <BrowserRouter>
+        <ChatApp/>
+    </BrowserRouter>, 
+    document.getElementById('root'));
