@@ -15,7 +15,7 @@ export const Timer = (props) => {
     useInterval(() => {
         
         if (minute < 0 ||
-            second <= 0 && minute <= 0) {
+            (second <= 0 && minute <= 0)) {
             setTicking(false);
             setSecond(0);
             setMinute(0);
