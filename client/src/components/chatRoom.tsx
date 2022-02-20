@@ -1,6 +1,6 @@
 /** Chat room page **/
 
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import { ChatRoom, MessageFrame, Message } from '../interface';
 import { AppContext } from '../context'
 import { Header, Timer } from '../components/common';
@@ -49,17 +49,24 @@ const ChatPageBody = (props) => {
 const ChatMsgContainer = () => {
     const { state, dispatcher } = useContext(AppContext);
     const { currentRoom } : {currentRoom: ChatRoom } = state;
+    const msgContainerRef = useRef(null);
 
-    //TODO: Add a feature to align speech balloons to left or right
+    useEffect(() => {
+        console.log('useEffect');
+        console.log(msgContainerRef.current);
+        //msgContainerRef.current?.scrollIntoView({behavior: "smooth", block: "end"});
+        msgContainerRef.current.scrollTop = msgContainerRef.current.scrollHeight;
+    }, [state.currentRoom.messages]);
+
     //TODO: Move to the buttom of the div when a new message comes
     return (
         <div className='chat-msg__container-shape'>  
-            <div className='chat-msg__container'>     
+            <div className='chat-msg__container' ref={msgContainerRef}>     
                 { currentRoom.messages.map((message, i) => {
                     return (
                         <SpeechBalloon
                             key={`speech-balloon-${i}`} 
-                            userName='' 
+                            userName={message.userName}
                             message={message.text}
                             isMyComment={message.isMyComment}/>
                     )
@@ -74,7 +81,7 @@ const SpeechBalloon = (props) => {
 
     return (
         <div className={'speech-balloon' + (isMyComment? ' speech-balloon--mine':'')}>
-            { userName && <p className='speech-balloon__username'>{userName}:</p>}
+            { userName && <span className='speech-balloon__username'>{userName}:</span>}
             <p className='speech-balloon__text'>{message}</p>
         </div>
     )

@@ -16,6 +16,8 @@ export const Timer = (props) => {
         
         if (second <= 0 && minute <= 0) {
             setTicking(false);
+            setSecond(0);
+            setMinute(0);
             if (typeof onExpired === 'function') 
                 onExpired();
         } else {

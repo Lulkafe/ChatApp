@@ -4,7 +4,7 @@ import React, { useState, useEffect, useReducer, useContext } from 'react';
 import { AppContext } from '../context';
 import { initState, Reducer, EventDispatcher } from '../reducer';
 import { io } from 'socket.io-client';
-import { MessageFrame, ChatRoom } from '../interface';
+import { ChatRoom } from '../interface';
 import { Timer, Header } from '../components/common'; 
 import { ChatRoomPage } from '../components/chatRoom';
 import { hasRoomExpired } from '../util';
