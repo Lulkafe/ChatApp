@@ -55,15 +55,11 @@ export const ChatApp = () => {
     
     return (
         <AppContext.Provider value={{state, dispatcher}}>
-            {/* state.currentRoom? <ChatRoomPage/> : <TopPage/> */}
             <Routes>
                 <Route path="/" element={<TopPage/>}/>
-                { state.activeRooms.map(room => {
-                    return <Route path='/:id' element={<ChatRoomPage/>}/>
-                })}
+                <Route path='/:id' element={<ChatRoomPage/>}/>
             </Routes>
         </AppContext.Provider>
-        
     )
 }
 
@@ -225,11 +221,12 @@ const BlockForRooms = () => {
             <p className='room__header'>Rooms</p>
             <ul className='room-list'>
                 { activeRooms.length > 0? 
-                  activeRooms.map((room: ChatRoom, count) => {
+                  activeRooms.map((room: ChatRoom, i) => {
 
                     return (
-                        <li key={`room-key-${count}`}>
-                            <Link to={`/${room.id}`} className='link-tag'>
+                        <li key={`room-key-${i}`}>
+                            <Link to={`/${room.id}`} 
+                                className='link-tag'>
                                 <RoomTag room={room}/>
                             </Link>
                         </li>
