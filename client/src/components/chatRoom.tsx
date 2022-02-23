@@ -6,6 +6,14 @@ import { AppContext } from '../context'
 import { Header, Timer } from '../components/common';
 
 export const ChatRoomPage = () => {
+    const { state } = useContext(AppContext); 
+
+    useEffect(() => {
+        return () => { 
+            state.socket.emit('leave room', state.currentRoom.id); 
+        }
+    },[])
+
     return (
         <div className='chat-page__wrapper'>
             <Header/>

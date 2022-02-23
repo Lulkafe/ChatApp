@@ -23,15 +23,10 @@ app.use(cors({
     origin: frontEndOrigin
 }))
 
-app.get('/', (req: Request, res: Response) => {
-    res.sendStatus(200);
-})
 
 //User requests a room ID to server
-//TODO: change 'roomID' to 'newRoom' 
 app.get('/api/room/new', (req: Request, res: Response) => {
-    
-    console.log('[GET] - /api/room/new');
+    console.log('[GET]: /api/room/new');
     
     if (roomHandler.canCreateNewRoom()) {
         try {
@@ -45,9 +40,8 @@ app.get('/api/room/new', (req: Request, res: Response) => {
 });
 
 app.post('/api/room/size', (req: Request, res: Response) => {
-    console.log('[POST] - /api/room/size');
+    console.log('[POST]: /api/room/size');
     const { roomId } = req.body;
-    console.log(req.body);
     let roomSize = null;
 
     if (roomHandler.doesThisRoomExist(roomId)) {
@@ -60,7 +54,7 @@ app.post('/api/room/size', (req: Request, res: Response) => {
 })
 
 app.post('/api/room/check', (req: Request, res: Response) => {
-    console.log('[POST] - /api/room/check');
+    console.log('[POST]: /api/room/check');
     const { roomId } = req.body;
 
     if (!roomId)
@@ -73,13 +67,11 @@ app.post('/api/room/check', (req: Request, res: Response) => {
 });
 
 
-
-
 io.on('connection', (socket) => {
-    console.log(`A user connected: ${socket.id}`);
+    console.log(`[CONNECTION]: A user connected: ${socket.id}`);
 
     socket.on('chat message', (msgFrame: MessageFrame) => {
-        console.log(`[NEW MESSAGE] TO: ${msgFrame.roomId}`);
+        console.log(`[NEW MESSAGE]: TO ${msgFrame.roomId}`);
 
         if (msgFrame.roomId) 
             socket.to(msgFrame.roomId).emit('chat message', msgFrame.message);
@@ -93,20 +85,22 @@ io.on('connection', (socket) => {
     })
 
     socket.on('leave room', (roomId) => {
+        console.log(`[LEAVE ROOM]: in ${roomId}`);
         socket.leave(roomId);
         io.to(roomId).emit('update participant', roomId);
     })
 
     socket.on('disconnecting', () => {
-        console.log('A user is disconnecting...');
+        console.log('[DISCONNECTING]: A user is disconnecting...');
 
+        //First element of the array is user ID, not room ID.
         const joinedRooms = Array.from(socket.rooms).slice(1);
         for (const joinedRoom of joinedRooms) 
             io.to(joinedRoom).emit('update participant', joinedRoom);
     })
 
     socket.on('disconnect', () => {
-        console.log(`A user disconnected: ${socket.id}`);
+        console.log(`[DISCONNECT]: nA user disconnected: ${socket.id}`);
     })
 })
 

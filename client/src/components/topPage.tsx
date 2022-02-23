@@ -1,6 +1,6 @@
 /** Landing Page **/
 
-import React, { useState, useEffect, useReducer, useContext } from 'react';
+import React, { useState, useEffect, useReducer, useContext, useRef } from 'react';
 import { AppContext } from '../context';
 import { initState, Reducer, EventDispatcher } from '../reducer';
 import { io } from 'socket.io-client';
@@ -55,27 +55,22 @@ export const ChatApp = () => {
     
     return (
         <AppContext.Provider value={{state, dispatcher}}>
-            {/* state.currentRoom? <ChatRoomPage/> : <TopPage/> */}
             <Routes>
                 <Route path="/" element={<TopPage/>}/>
-                { state.activeRooms.map(room => {
-                    return <Route path='/:id' element={<ChatRoomPage/>}/>
-                })}
+                <Route path='/:id' element={<ChatRoomPage/>}/>
             </Routes>
         </AppContext.Provider>
-        
     )
 }
 
 const RoomIDFieldForGuest = () => {
     
     const { dispatcher } = useContext(AppContext);
-    const inputId = 'user-input';
+    const [ errMsg, setErrMsg ] = useState('');
+    const inputRef = useRef(null);
     const placeholder = 'Tell me Room #';
     const onClick = async () => {
-        
-        const input: string = 
-            (document.getElementById(inputId) as HTMLInputElement).value;
+        const input: string = inputRef.current.value;
 
         try {
             const response: Response =
@@ -90,6 +85,11 @@ const RoomIDFieldForGuest = () => {
 
             const result = await response.json();
 
+            if ('error' in result) {
+                setErrMsg(result.error);
+                return;
+            } 
+
             const guestRoom: ChatRoom = {
                 id: result.room.id,
                 createdOn: result.room.createdOn,
@@ -98,19 +98,21 @@ const RoomIDFieldForGuest = () => {
                 participant: 0
             }
 
+            setErrMsg('');
             dispatcher.addRoom(guestRoom);
 
         } catch (e) {
-            //TODO: show an error message to the user
+            setErrMsg('Server error. Try again later..')
         }
 
-        (document.getElementById(inputId) as HTMLInputElement).value = '';
+        inputRef.current.value = '';
     }
 
     return (
-        <div>
-            <input type='text' placeholder={placeholder} 
-                id={inputId} className='guest__id-input'></input>
+        <div className='guest__field-wrapper'>
+            <p className='guest__err-msg'>{errMsg}</p>
+            <input type='text' placeholder={placeholder}
+                ref={inputRef} className='guest__id-input'></input>
             <button type='button' onClick={onClick}
                 className='guest__submit-button'>Enter</button>
         </div>
@@ -120,15 +122,22 @@ const RoomIDFieldForGuest = () => {
 const RoomIDFieldForHost = () => {
 
     const [id, setId] = useState('');
+    const [errMsg, setErrMsg] = useState('');
     const placeholder = 'Room# will appear here';
     const { state, dispatcher } = useContext(AppContext);
 
     const onClick = async () => {
-        const response: Response = 
-            await fetch(`${testServerDomain}/api/room/new`);
-        const newRoomInfo = await response.json();
 
-        if (newRoomInfo) {
+        try {
+            const response: Response = 
+            await fetch(`${testServerDomain}/api/room/new`);
+            const newRoomInfo = await response.json();
+
+            if ('error' in newRoomInfo) {
+                setErrMsg(newRoomInfo.error);
+                return;
+            }
+
             setId(newRoomInfo.id);
 
             //Server doesn't keep the user messages
@@ -140,11 +149,16 @@ const RoomIDFieldForHost = () => {
             }
 
             dispatcher.addRoom(newRoom);
+        
+        } catch (e) {
+            setErrMsg('Server error. Try again later..')
         }
+        
     }
 
     return (
         <div>
+            <p className='host__err-msg'>{errMsg}</p>
             <input type='input' readOnly id='input__roomID' 
                 className='host__input'
                 value={id} placeholder={placeholder}></input>
@@ -162,9 +176,9 @@ const TopPage = () => {
                 <MessageToUser/>
                 <ContentContainer>
                     <BlockForHost />
-                    <hr/>
+                    <hr className='section-separator'/>
                     <BlockForGuest />
-                    <hr/>
+                    <hr className='section-separator'/>
                     <BlockForRooms />
                 </ContentContainer>
             </TopPageBody>
@@ -225,11 +239,12 @@ const BlockForRooms = () => {
             <p className='room__header'>Rooms</p>
             <ul className='room-list'>
                 { activeRooms.length > 0? 
-                  activeRooms.map((room: ChatRoom, count) => {
+                  activeRooms.map((room: ChatRoom, i) => {
 
                     return (
-                        <li key={`room-key-${count}`}>
-                            <Link to={`/${room.id}`} className='link-tag'>
+                        <li key={`room-key-${i}`}>
+                            <Link to={`/${room.id}`} 
+                                className='link-tag'>
                                 <RoomTag room={room}/>
                             </Link>
                         </li>
