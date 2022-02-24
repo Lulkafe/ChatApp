@@ -15,9 +15,11 @@ export function calcTimeDiff (startISOTime: string, endISOTime: string, zeroIfOv
 }
 
 export function hasRoomExpired (chatRoom: ChatRoom): boolean {
-    return _getTimeDiff(chatRoom.expiredOn, chatRoom.createdOn) <= 0;
+    const currentTime = new Date().getTime();
+    const expiredTime = new Date(chatRoom.expiredOn).getTime();
+    return (expiredTime - currentTime) <= 0;
 }
 
-function _getTimeDiff(startISOTime: string, endISOTime: string): number {
-    return new Date(startISOTime).getTime() - new Date(endISOTime).getTime();
+function _getTimeDiff(ISOTime1: string, ISOTime2: string): number {
+    return new Date(ISOTime1).getTime() - new Date(ISOTime2).getTime();
 }

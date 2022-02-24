@@ -34,8 +34,10 @@ app.get('/api/room/new', (req: Request, res: Response) => {
             res.json(newRoom);
         } catch (e) {
             console.error(e);
-            res.json({ error: `Unexpected error happened` })
+            res.json({ error: 'Server internal error happened' })
         }
+    } else {
+        res.json({ error: 'All rooms are full. Try later..'})
     }
 });
 
@@ -47,10 +49,12 @@ app.post('/api/room/size', (req: Request, res: Response) => {
     if (roomHandler.doesThisRoomExist(roomId)) {
         console.log(`Room ${roomId} exists`);
         roomSize = io.sockets.adapter.rooms.get(roomId).size
-    } else
+        res.json({ size: roomSize });
+    } else {
         console.log(`Room ${roomId} does not exist`);
+        res.json({ error: 'No such room exists'})
+    }
 
-    res.json({ size: roomSize });
 })
 
 app.post('/api/room/check', (req: Request, res: Response) => {
@@ -58,7 +62,7 @@ app.post('/api/room/check', (req: Request, res: Response) => {
     const { roomId } = req.body;
 
     if (!roomId)
-        return res.json({ error: 'Room Id not found or given properly' });
+        return res.json({ error: 'Invalid Room ID' });
 
     if (roomHandler.doesThisRoomExist(roomId)) 
         return res.json({ room: roomHandler.fetchRoomInfo(roomId) });

@@ -1,5 +1,5 @@
 export interface AppState {
-    activeRooms: ChatRoom [],
+    rooms: ChatRoom [],
     maxRooms: number,
     currentRoom: ChatRoom | null,
     socket

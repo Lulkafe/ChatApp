@@ -1,8 +1,7 @@
-import { ReducerAction } from 'react';
 import { AppState, ChatRoom, Message } from './interface';
 
 export const initState: AppState = {
-    activeRooms: [],
+    rooms: [],
     maxRooms: 5,
     currentRoom: null,
     socket: null
@@ -79,7 +78,7 @@ export const Reducer = (state, action) => {
                 return {
                     ...state,
                     currentRoom: updatedRoom,
-                    activeRooms: state.activeRooms.map(room => {
+                    rooms: state.rooms.map(room => {
                         if (room.id === updatedRoom.id)
                             return updatedRoom;
                         else
@@ -92,7 +91,7 @@ export const Reducer = (state, action) => {
                 const newRoom: ChatRoom = action.value;
                 return {
                     ...state,
-                    activeRooms: [...state.activeRooms, newRoom]
+                    rooms: [...state.rooms, newRoom]
                 }
             }
         
@@ -109,7 +108,7 @@ export const Reducer = (state, action) => {
             {
                 const roomID = action.value;
                 const room: ChatRoom = 
-                    state.activeRooms.find(room => room.id == roomID);
+                    state.rooms.find(room => room.id == roomID);
 
                 if (!room)
                     return state;

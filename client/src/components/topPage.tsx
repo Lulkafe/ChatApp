@@ -111,8 +111,12 @@ const RoomIDFieldForGuest = () => {
     return (
         <div className='guest__field-wrapper'>
             <p className='guest__err-msg'>{errMsg}</p>
-            <input type='text' placeholder={placeholder}
-                ref={inputRef} className='guest__id-input'></input>
+            <input type='text' 
+                placeholder={placeholder}
+                ref={inputRef} 
+                className={'guest__id-input' + 
+                    (errMsg? ' warning-border' : ' ')}
+            />
             <button type='button' onClick={onClick}
                 className='guest__submit-button'>Enter</button>
         </div>
@@ -148,6 +152,7 @@ const RoomIDFieldForHost = () => {
                 participant: 0
             }
 
+            setErrMsg('');
             dispatcher.addRoom(newRoom);
         
         } catch (e) {
@@ -160,8 +165,11 @@ const RoomIDFieldForHost = () => {
         <div>
             <p className='host__err-msg'>{errMsg}</p>
             <input type='input' readOnly id='input__roomID' 
-                className='host__input'
-                value={id} placeholder={placeholder}></input>
+                value={id} 
+                placeholder={placeholder} 
+                className={'host__input' + 
+                    (errMsg? ' warning-border' : '' )} 
+            />
             <button type='button' onClick={onClick}
                 className='host__get-button'>Make a Room</button>
         </div>
@@ -232,14 +240,14 @@ const BlockForGuest = () => {
 const BlockForRooms = () => {
     
     const { state } = useContext(AppContext);
-    const { activeRooms } = state;
+    const { rooms } = state;
 
     return (
         <div className='room__container'>
             <p className='room__header'>Rooms</p>
             <ul className='room-list'>
-                { activeRooms.length > 0? 
-                  activeRooms.map((room: ChatRoom, i) => {
+                { rooms.length > 0? 
+                  rooms.map((room: ChatRoom, i) => {
 
                     return (
                         <li key={`room-key-${i}`}>

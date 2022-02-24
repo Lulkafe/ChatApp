@@ -52,7 +52,7 @@
     padding: 2rem 0 2rem 0
     
 .guest__err-msg
-    margin: 0
+    margin: 0 0 2px 0
     height: 20px
     color: red
 
@@ -75,7 +75,7 @@
     padding: 2rem 0 2rem 0
 
 .host__err-msg
-    margin: 0
+    margin: 0 0 2px 0
     height: 20px
     color: red
 
@@ -126,11 +126,17 @@
 .room-tag:hover
     background: lightgray
 
+//.room-tag--expired
+
+
 .room-tag__indicator
     display: inline-block
     width: 20px
     height: 80%
     background: #5EE36A
+
+.room-tag__indicator--expired
+    background: #2f302f
 
 .room-tag__info-container
     display: inline-block
@@ -150,3 +156,6 @@
 
 .section-separator
     margin: 0
+
+.warning-border
+    border: 1px solid red
