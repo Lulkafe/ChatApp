@@ -20,6 +20,7 @@ export const ChatApp = () => {
     const [state, dispatch] = useReducer(Reducer, initState);
     const dispatcher: EventDispatcher = new EventDispatcher(dispatch);
 
+    //Initialization
     useEffect(() => {
         const soc = io(testServerDomain);
 
@@ -29,8 +30,7 @@ export const ChatApp = () => {
 
         soc.on('update participant', async (roomId) => {
 
-            if (!roomId)
-                return;
+            if (!roomId) return;
 
             const response: Response =
                 await fetch(`${testServerDomain}/api/room/size`, {
@@ -44,7 +44,7 @@ export const ChatApp = () => {
 
             const result = await response.json();
             
-            if (result && result.size) 
+            if (result && result?.size) 
                 dispatcher.updateRoomParticipant(result.size);
            
         })
@@ -125,7 +125,7 @@ const RoomIDFieldForGuest = () => {
 
 const RoomIDFieldForHost = () => {
 
-    const [id, setId] = useState('');
+    const [roomId, setRoomId] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const placeholder = 'Room# will appear here';
     const { state, dispatcher } = useContext(AppContext);
@@ -139,10 +139,11 @@ const RoomIDFieldForHost = () => {
 
             if ('error' in newRoomInfo) {
                 setErrMsg(newRoomInfo.error);
+                setRoomId('');
                 return;
             }
 
-            setId(newRoomInfo.id);
+            setRoomId(newRoomInfo.id);
 
             //Server doesn't keep the user messages
             //so a message array added here for front-end use 
@@ -161,11 +162,19 @@ const RoomIDFieldForHost = () => {
         
     }
 
+    useEffect(() => {
+        const hasRoomExpired = 
+            (state.rooms.findIndex(room => room.id == roomId)) < 0;
+            
+        if (hasRoomExpired)
+            setRoomId('');
+    }, [state.rooms])
+
     return (
         <div>
             <p className='host__err-msg'>{errMsg}</p>
             <input type='input' readOnly id='input__roomID' 
-                value={id} 
+                value={roomId} 
                 placeholder={placeholder} 
                 className={'host__input' + 
                     (errMsg? ' warning-border' : '' )} 
