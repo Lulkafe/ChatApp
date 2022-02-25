@@ -9,14 +9,12 @@ export const Timer = (props) => {
     const timeLeft = calcTimeDiff(initialTime, endTime);
     const [second, setSecond] = useState(timeLeft.sec);
     const [minute, setMinute] = useState(timeLeft.min);
-    const [ticking, setTicking] = useState(true);
     const pad0 = (n: number) => n.toString().padStart(2, '0');
 
     useInterval(() => {
         
         if (minute < 0 ||
             (second <= 0 && minute <= 0)) {
-            setTicking(false);
             setSecond(0);
             setMinute(0);
             if (typeof onExpired === 'function') 
@@ -28,7 +26,7 @@ export const Timer = (props) => {
             setSecond(remaining.sec);
         }
 
-    }, ticking? 1000 : null);
+    }, 1000);
 
     return (
         <span className={props.className}>

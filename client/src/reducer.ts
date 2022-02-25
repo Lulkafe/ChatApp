@@ -57,6 +57,7 @@ export class EventDispatcher {
     }
 
     public expireRoom(roomId: string): void {
+        console.log(`Room ${roomId} has expired`);
         this.dispatch({ type: ACTION.EXPIRE.ROOM, value: roomId });
     }
 

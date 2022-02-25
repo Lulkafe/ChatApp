@@ -271,10 +271,6 @@ const RoomTag = (props) => {
     const { room }: { room: ChatRoom } = props;
     const { socket } = state;
     const expired = hasRoomExpired(room);
-    const tagClass = 'room-tag ' + 
-        (expired? 'room-tag--expired' : '')
-    const indicatorClass = 'room-tag__indicator ' + 
-        (expired? 'room-tag__indicator--expired' : '');
     const onClickTag = () => {
         if (room.id && socket) {
             dispatcher.changeRoom(room.id);
@@ -283,8 +279,8 @@ const RoomTag = (props) => {
     }
 
     return (
-        <div className={tagClass} onClick={onClickTag}> 
-            <span className={indicatorClass}></span>
+        <div className='room-tag' onClick={onClickTag}> 
+            <span className='room-tag__indicator'></span>
             <span className='room-tag__info-container'>
                 <div className='room-tag__room-wrapper'>
                     <p className='room-tag__header'>Room #</p>

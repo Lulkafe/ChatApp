@@ -11,7 +11,7 @@ export class ChatRoomHandler {
     private watchRooms: boolean;
 
     constructor () {
-        this.validMin = 0.2;   //How long the room is valid
+        this.validMin = 0.17;   //How long the room is valid
         this.roomArray = [];  //Keep rooms in FILO order
         this.roomDic = {};    //For quick access to a room
         this.roomMax = 10000; 
