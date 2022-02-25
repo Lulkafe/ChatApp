@@ -4,32 +4,37 @@ import React, { useContext, useEffect, useState, useRef } from 'react'
 import { ChatRoom, MessageFrame, Message } from '../interface';
 import { AppContext } from '../context'
 import { Header, Timer } from '../components/common';
+import { Navigate } from 'react-router-dom';
 
 export const ChatRoomPage = () => {
     const { state } = useContext(AppContext); 
+    const { currentRoom, socket } = state;
 
     useEffect(() => {
         return () => { 
-            state.socket.emit('leave room', state.currentRoom.id); 
+            if (currentRoom)
+                socket.emit('leave room', currentRoom.id); 
         }
     },[])
 
     return (
-        <div className='chat-page__wrapper'>
-            <Header/>
-            <StatusBar/>
-            <ChatPageBody>
-                <ChatMsgContainer/>
-                <ChatMessageInput/>
-            </ChatPageBody>
-        </div>
+        currentRoom? 
+            <div className='chat-page__wrapper'>
+                <Header/>
+                {currentRoom && <StatusBar/>}
+                <ChatPageBody>
+                    <ChatMsgContainer/>
+                    <ChatMessageInput/>
+                </ChatPageBody>
+            </div>
+        : <Navigate to='/'/>
     )
 }
 
 const StatusBar = () => {
-    const { state } = useContext(AppContext);
+    const { state, dispatcher } = useContext(AppContext);
     const curRoom: ChatRoom = state.currentRoom;
-    const roomId = curRoom.id;
+    const roomId = state.currentRoom.id;
     const participant = curRoom.participant;
 
     return (
@@ -37,9 +42,10 @@ const StatusBar = () => {
             <div className='status-bar__content-wrapper'>
                 <span className='status-bar__roomId'>&#128273; {roomId}</span>
                 <span className='status-bar__participants'>&#129485;{participant}</span>
-                <span className='status-bar__timer'>Deleted in <Timer 
-                      startTime={new Date().toISOString()}
-                      endTime={curRoom.expiredOn}/></span>
+                <span className='status-bar__timer'>Deleted in <Timer
+                    onExpired={() => dispatcher.expireRoom(roomId)}
+                    startTime={new Date().toISOString()}
+                    endTime={curRoom.expiredOn}/></span>
             </div>
         </div>
     )

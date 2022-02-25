@@ -56,6 +56,10 @@ export class EventDispatcher {
         this.dispatch({ type: ACTION.CHANGE.PARTICIPANT, value: num});
     }
 
+    public expireRoom(roomId: string): void {
+        this.dispatch({ type: ACTION.EXPIRE.ROOM, value: roomId });
+    }
+
 }
 
 export const Reducer = (state, action) => {
@@ -122,8 +126,7 @@ export const Reducer = (state, action) => {
         case ACTION.CHANGE.PARTICIPANT:
             {
                 const participant = action.value;
-                if (!participant)
-                    return state;
+                if (!participant) return state;
                 
                 return {
                     ...state,
@@ -135,6 +138,20 @@ export const Reducer = (state, action) => {
             }
         
         case ACTION.EXPIRE.ROOM:
+            {
+                const expiredRoomId = action.value;
+                if (!expiredRoomId) return state;
+
+                return {
+                    ...state,
+                    rooms: state.rooms.map(room => {
+                        return room.id == expiredRoomId? null : room;
+                    }).filter(r => r),
+                    currentRoom: (expiredRoomId == state.currentRoom?.id)?
+                        null : state.currentRoom
+                }
+            }
+            
             return state;
         
         default:
