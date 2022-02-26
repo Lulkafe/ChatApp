@@ -62,7 +62,8 @@ const RoomIDFieldForGuest = () => {
     const { dispatcher } = useContext(AppContext);
     const [ errMsg, setErrMsg ] = useState('');
     const inputRef = useRef(null);
-    const placeholder = 'Tell me Room #';
+    const inputPlaceholder = 'Tell me Room #';
+    const serverErrMsg = 'Server error. Try again later..';
     const onClick = async () => {
         const input: string = inputRef.current.value;
 
@@ -97,7 +98,7 @@ const RoomIDFieldForGuest = () => {
             dispatcher.addRoom(guestRoom);
 
         } catch (e) {
-            setErrMsg('Server error. Try again later..')
+            setErrMsg(serverErrMsg);
         }
 
         inputRef.current.value = '';
@@ -107,7 +108,7 @@ const RoomIDFieldForGuest = () => {
         <div className='guest__field-wrapper'>
             <p className='guest__err-msg'>{errMsg}</p>
             <input type='text' 
-                placeholder={placeholder}
+                placeholder={inputPlaceholder}
                 ref={inputRef} 
                 className={'guest__id-input' + 
                     (errMsg? ' warning-border' : ' ')}
@@ -122,15 +123,19 @@ const RoomIDFieldForHost = () => {
 
     const [roomId, setRoomId] = useState('');
     const [errMsg, setErrMsg] = useState('');
-    const placeholder = 'Room# will appear here';
     const { state, dispatcher } : 
-            {state: AppState, dispatcher: EventDispatcher} = useContext(AppContext);
+    {state: AppState, dispatcher: EventDispatcher} = useContext(AppContext);
     const { numOfHostingRooms, hostingRoomLimit } = state;
+    const fieldPlaceholder = 'Room# will appear here';
+    const upperLimitErrMsg = `You can make up to ${hostingRoomLimit} rooms`;
+    const serverErrMsg = 'Server error. Try again later..';
 
     const onClick = async () => {
 
+        console.log(numOfHostingRooms, hostingRoomLimit);
+
         if (numOfHostingRooms >= hostingRoomLimit){
-            setErrMsg(`You can make up to ${hostingRoomLimit} rooms`)
+            setErrMsg(upperLimitErrMsg)
             return;
         } 
 
@@ -160,17 +165,21 @@ const RoomIDFieldForHost = () => {
             dispatcher.addRoom(newRoom);
         
         } catch (e) {
-            setErrMsg('Server error. Try again later..')
+            setErrMsg(serverErrMsg)
         }
         
     }
 
     useEffect(() => {
-        const hasRoomExpired = 
+        const hostingRoomExpired = 
             (state.rooms.findIndex(room => room.id == roomId)) < 0;
     
-        if (hasRoomExpired)
+        if (hostingRoomExpired)
             setRoomId('');
+
+        if (numOfHostingRooms < hostingRoomLimit &&
+            errMsg === upperLimitErrMsg)
+            setErrMsg('');
 
     }, [state.rooms])
 
@@ -179,7 +188,7 @@ const RoomIDFieldForHost = () => {
             <p className='host__err-msg'>{errMsg}</p>
             <input type='input' readOnly id='input__roomID' 
                 value={roomId} 
-                placeholder={placeholder} 
+                placeholder={fieldPlaceholder} 
                 className={'host__input' + 
                     (errMsg? ' warning-border' : '' )} 
             />
