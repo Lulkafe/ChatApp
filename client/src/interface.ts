@@ -1,16 +1,21 @@
 export interface AppState {
     rooms: ChatRoom [],
-    maxRooms: number,
+    hostingRoomLimit: number,
     currentRoom: ChatRoom | null,
-    socket
+    socket: any,
+    numOfHostingRooms: number
 }
 
 export interface ChatRoom {
+    //Given by Server
     id: string,
-    messages: Message [],
     createdOn: string,
     expiredOn: string,
-    participant: number
+    participant: number, 
+    
+    //Used only by client side
+    messages: Message [],
+    amIHost: boolean  
 }
 
 export interface Message {

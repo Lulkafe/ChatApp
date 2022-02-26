@@ -2,9 +2,10 @@ import { AppState, ChatRoom, Message } from './interface';
 
 export const initState: AppState = {
     rooms: [],
-    maxRooms: 5,
+    hostingRoomLimit: 2,
     currentRoom: null,
-    socket: null
+    socket: null,
+    numOfHostingRooms: 0
 }
 
 export const ACTION = {
@@ -19,9 +20,6 @@ export const ACTION = {
     },
     EXPIRE: {
         ROOM: 'A room has expired'
-    },
-    DELETE: {
-        ROOM: 'Remove a room'
     }
 }
 
@@ -36,10 +34,6 @@ export class EventDispatcher {
         this.dispatch({ type: ACTION.ADD.ROOM, value: room });
     }
 
-    public deleteRoom (room: ChatRoom): void {
-        this.dispatch({ type: ACTION.DELETE.ROOM, value: room });
-    }
-
     public addSocket (socket): void {
         this.dispatch({ type: ACTION.ADD.SOCKET, value: socket });
     }
@@ -48,7 +42,7 @@ export class EventDispatcher {
         this.dispatch({ type: ACTION.CHANGE.ROOM, value: roomId });
     }
     
-    public addMessage(message: string): void {
+    public addMessage(message: Message): void {
         this.dispatch({ type: ACTION.ADD.MESSAGE, value: message });
     }
 
@@ -94,9 +88,13 @@ export const Reducer = (state, action) => {
         case ACTION.ADD.ROOM:
             {
                 const newRoom: ChatRoom = action.value;
+                const hostingRooms: number = state.numOfHostingRooms;
+
                 return {
                     ...state,
-                    rooms: [...state.rooms, newRoom]
+                    rooms: [...state.rooms, newRoom],
+                    numOfHostingRooms: newRoom.amIHost? 
+                        hostingRooms + 1 : hostingRooms
                 }
             }
         
@@ -140,20 +138,29 @@ export const Reducer = (state, action) => {
         
         case ACTION.EXPIRE.ROOM:
             {
-                const expiredRoomId = action.value;
+                const expiredRoomId: string = action.value;
                 if (!expiredRoomId) return state;
+
+                let numOfHostingRooms: number = state.numOfHostingRooms;
+                const rooms = state.rooms.map(room => {
+                  
+                    if (room.id == expiredRoomId) {
+                        numOfHostingRooms--; 
+                        return null;
+                    } 
+
+                    return room;
+                }).filter(r => r);
+
 
                 return {
                     ...state,
-                    rooms: state.rooms.map(room => {
-                        return room.id == expiredRoomId? null : room;
-                    }).filter(r => r),
+                    rooms,
+                    numOfHostingRooms,
                     currentRoom: (expiredRoomId == state.currentRoom?.id)?
                         null : state.currentRoom
                 }
             }
-            
-            return state;
         
         default:
             return state;

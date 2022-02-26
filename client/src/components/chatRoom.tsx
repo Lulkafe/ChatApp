@@ -1,13 +1,12 @@
-/** Chat room page **/
-
 import React, { useContext, useEffect, useState, useRef } from 'react'
-import { ChatRoom, MessageFrame, Message } from '../interface';
+import { AppState, ChatRoom, MessageFrame, Message  } from '../interface';
 import { AppContext } from '../context'
 import { Header, Timer } from '../components/common';
 import { Navigate } from 'react-router-dom';
+import { EventDispatcher } from '../reducer';
 
 export const ChatRoomPage = () => {
-    const { state } = useContext(AppContext); 
+    const { state } : { state: AppState }= useContext(AppContext); 
     const { currentRoom, socket } = state;
 
     useEffect(() => {
@@ -32,7 +31,8 @@ export const ChatRoomPage = () => {
 }
 
 const StatusBar = () => {
-    const { state, dispatcher } = useContext(AppContext);
+    const { state, dispatcher } : 
+        {state: AppState, dispatcher: EventDispatcher} = useContext(AppContext);
     const curRoom: ChatRoom = state.currentRoom;
     const roomId = state.currentRoom.id;
     const participant = curRoom.participant;
@@ -61,7 +61,7 @@ const ChatPageBody = (props) => {
 
 
 const ChatMsgContainer = () => {
-    const { state } = useContext(AppContext);
+    const { state } : { state: AppState } = useContext(AppContext);
     const { currentRoom } : {currentRoom: ChatRoom } = state;
     const msgContainerRef = useRef(null);
 
@@ -101,7 +101,8 @@ const SpeechBalloon = (props) => {
 }
 
 const ChatMessageInput = () => {
-    const { state, dispatcher } = useContext(AppContext); 
+    const { state, dispatcher } : 
+        { state: AppState, dispatcher: EventDispatcher } = useContext(AppContext); 
     const { socket, currentRoom } = state; 
     const [userName, setUserName] = useState('');
     const onSubmit = (e) => {

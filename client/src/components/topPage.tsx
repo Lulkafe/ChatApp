@@ -1,20 +1,14 @@
-/** Landing Page **/
-
 import React, { useState, useEffect, useReducer, useContext, useRef } from 'react';
 import { AppContext } from '../context';
 import { initState, Reducer, EventDispatcher } from '../reducer';
 import { io } from 'socket.io-client';
-import { ChatRoom } from '../interface';
+import { AppState, ChatRoom } from '../interface';
 import { Timer, Header } from '../components/common'; 
 import { ChatRoomPage } from '../components/chatRoom';
 import { hasRoomExpired } from '../util';
 import { Routes, Route, Link } from 'react-router-dom';
 
 const testServerDomain = 'http://localhost:3000';
-
-const Test = () => {
-    return <p>Test!</p>;
-}
 
 export const ChatApp = () => {
     const [state, dispatch] = useReducer(Reducer, initState);
@@ -95,7 +89,8 @@ const RoomIDFieldForGuest = () => {
                 createdOn: result.room.createdOn,
                 expiredOn: result.room.expiredOn,
                 messages: [],
-                participant: 0
+                participant: 0,
+                amIHost: false
             }
 
             setErrMsg('');
@@ -128,9 +123,16 @@ const RoomIDFieldForHost = () => {
     const [roomId, setRoomId] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const placeholder = 'Room# will appear here';
-    const { state, dispatcher } = useContext(AppContext);
+    const { state, dispatcher } : 
+            {state: AppState, dispatcher: EventDispatcher} = useContext(AppContext);
+    const { numOfHostingRooms, hostingRoomLimit } = state;
 
     const onClick = async () => {
+
+        if (numOfHostingRooms >= hostingRoomLimit){
+            setErrMsg(`You can make up to ${hostingRoomLimit} rooms`)
+            return;
+        } 
 
         try {
             const response: Response = 
@@ -150,7 +152,8 @@ const RoomIDFieldForHost = () => {
             const newRoom: ChatRoom = {
                 ...newRoomInfo,
                 messages: [],
-                participant: 0
+                participant: 0,
+                amIHost: true
             }
 
             setErrMsg('');
@@ -165,9 +168,10 @@ const RoomIDFieldForHost = () => {
     useEffect(() => {
         const hasRoomExpired = 
             (state.rooms.findIndex(room => room.id == roomId)) < 0;
-            
+    
         if (hasRoomExpired)
             setRoomId('');
+
     }, [state.rooms])
 
     return (
@@ -248,7 +252,7 @@ const BlockForGuest = () => {
 
 const BlockForRooms = () => {
     
-    const { state } = useContext(AppContext);
+    const { state } : { state: AppState } = useContext(AppContext);
     const { rooms } = state;
 
     return (
@@ -276,7 +280,8 @@ const BlockForRooms = () => {
 
 const RoomTag = (props) => {
     
-    const { state, dispatcher } = useContext(AppContext);
+    const { state, dispatcher } : 
+        { state: AppState, dispatcher: EventDispatcher} = useContext(AppContext);
     const { room }: { room: ChatRoom } = props;
     const { socket } = state;
     const expired = hasRoomExpired(room);
