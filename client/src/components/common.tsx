@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import useInterval from 'react-useinterval';
 import { calcTimeDiff } from '../util'
+import SiteLogoIcon from '../image/site-logo.png';
+import { Link } from 'react-router-dom';
 
 export const Timer = (props) => {
     const onExpired = props.onExpired;
@@ -35,7 +37,13 @@ export const Timer = (props) => {
     )
 }
 
-export const Header = () => {
-    return <header className='site-header'></header>
+export const SiteHeader = () => {
+    return (
+        <header className='site-header'>
+            <Link to={'/'}>
+                <img className='site-header__logo-img' src={SiteLogoIcon}/>
+            </Link>
+        </header>
+    )
 }
 

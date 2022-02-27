@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
 import { AppState, ChatRoom, MessageFrame, Message  } from '../interface';
 import { AppContext } from '../context'
-import { Header, Timer } from '../components/common';
+import { SiteHeader, Timer } from '../components/common';
 import { Navigate } from 'react-router-dom';
 import { EventDispatcher } from '../reducer';
+import PersonLogo from '../image/person-logo.png';
 
 export const ChatRoomPage = () => {
     const { state } : { state: AppState }= useContext(AppContext); 
@@ -19,7 +20,7 @@ export const ChatRoomPage = () => {
     return (
         currentRoom? 
             <div className='chat-page__wrapper'>
-                <Header/>
+                <SiteHeader/>
                 {currentRoom && <StatusBar/>}
                 <ChatPageBody>
                     <ChatMsgContainer/>
@@ -41,8 +42,11 @@ const StatusBar = () => {
         <div className='status-bar'>
             <div className='status-bar__content-wrapper'>
                 <span className='status-bar__roomId'>&#128273; {roomId}</span>
-                <span className='status-bar__participants'>&#129485;{participant}</span>
-                <span className='status-bar__timer'>Deleted in <Timer
+                <span className='status-bar__participants'>
+                    <img className='status-bar__participants-image' 
+                         src={PersonLogo}/> {participant}
+                </span>
+                <span className='status-bar__timer'>&#128465; Deleted in <Timer
                     onExpired={() => dispatcher.expireRoom(roomId)}
                     startTime={new Date().toISOString()}
                     endTime={curRoom.expiredOn}/></span>

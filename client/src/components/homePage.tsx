@@ -3,10 +3,11 @@ import { AppContext } from '../context';
 import { initState, Reducer, EventDispatcher } from '../reducer';
 import { io } from 'socket.io-client';
 import { AppState, ChatRoom } from '../interface';
-import { Timer, Header } from '../components/common'; 
-import { ChatRoomPage } from '../components/chatRoom';
+import { Timer, SiteHeader } from './common'; 
+import { ChatRoomPage } from './chatRoom';
 import { hasRoomExpired } from '../util';
 import { Routes, Route, Link } from 'react-router-dom';
+
 
 const testServerDomain = 'http://localhost:3000';
 
@@ -201,7 +202,7 @@ const RoomIDFieldForHost = () => {
 const TopPage = () => {
     return (
         <div>
-            <Header/>
+            <SiteHeader/>
             <TopPageBody>
                 <MessageToUser/>
                 <ContentContainer>
