@@ -5,7 +5,6 @@ import { io } from 'socket.io-client';
 import { AppState, ChatRoom } from '../interface';
 import { Timer, SiteHeader } from './common'; 
 import { ChatRoomPage } from './chatRoom';
-import { hasRoomExpired } from '../util';
 import { Routes, Route, Link } from 'react-router-dom';
 
 
@@ -187,7 +186,7 @@ const RoomIDFieldForHost = () => {
     return (
         <div>
             <p className='host__err-msg'>{errMsg}</p>
-            <input type='input' readOnly id='input__roomID' 
+            <input type='input' readOnly
                 value={roomId} 
                 placeholder={fieldPlaceholder} 
                 className={'host__input' + 
@@ -228,8 +227,8 @@ const TopPageBody = (props) => {
 const MessageToUser = () => {
     return (
         <div>
-            <h1>No Sign-up. No Login.</h1>
-            <h3>Chat history is deleted in an hour.</h3>
+            <h1>Want to chat but<br/>don't want to register?</h1>
+            <h3>No sign-up. Just room#</h3>
         </div>
     )
 }
@@ -245,7 +244,7 @@ const ContentContainer = (props) => {
 const BlockForHost = () => {
     return (
         <div className='host__container'>
-            <p className='host__message'>Need a chatroom? &#128172;</p>
+            <p className='host__message'>Get your room#</p>
             <RoomIDFieldForHost />
         </div>
     )
@@ -254,7 +253,7 @@ const BlockForHost = () => {
 const BlockForGuest = () => {
     return (
         <div className='guest__container'>
-            <p className='guest__message'>Are you invited?</p>
+            <p className='guest__message'>Are you a guest?</p>
             <RoomIDFieldForGuest />
         </div>
     )
@@ -294,7 +293,6 @@ const RoomTag = (props) => {
         { state: AppState, dispatcher: EventDispatcher} = useContext(AppContext);
     const { room }: { room: ChatRoom } = props;
     const { socket } = state;
-    const expired = hasRoomExpired(room);
     const onClickTag = () => {
         if (room.id && socket) {
             dispatcher.changeRoom(room.id);

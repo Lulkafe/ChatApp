@@ -2,7 +2,7 @@
     display: block
     margin: 0 auto
     height: 40px
-    width: 185px
+    width: 200px
     text-align: center
     border-radius: 5px
     border: 1px solid #979797
@@ -71,6 +71,12 @@
     @include button-style
     background-color: #5DBDFF
 
+.guest__submit-button:hover
+    opacity: 80%
+
+.guest__submit-button:active
+    filter: brightness(80%)
+
 .host__container
     padding: 2rem 0 2rem 0
 
@@ -81,11 +87,21 @@
 
 .host__input
     @include button-shape
+    font-size: 24px
+
+.host__input::placeholder
+    font-size: 14px
 
 .host__get-button
     @include button-shape
     @include button-style
     background-color: #4376DE
+
+.host__get-button:hover
+    opacity: 80%
+
+.host__get-button:active
+    filter: brightness(80%)
 
 .host__message
     @include header-style
@@ -113,7 +129,7 @@
 
 .room-tag
     border: 1px solid #979797    
-    max-width: 280px
+    max-width: 250px
     height: 45px
     margin: 0 auto 7px auto
     border-radius: 5px
