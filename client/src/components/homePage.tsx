@@ -60,14 +60,27 @@ export const ChatApp = () => {
 const RoomIDFieldForGuest = () => {
     
     const { state, dispatcher } 
-        : { state: any, dispatcher : EventDispatcher} = useContext(AppContext);
+        : { state: AppState, dispatcher : EventDispatcher} = useContext(AppContext);
     const [ errMsg, setErrMsg ] = useState('');
     const navigate = useNavigate();
     const inputRef = useRef(null);
+    const maxInputLength = 4;
     const inputPlaceholder = 'Tell me Room #';
     const serverErrMsg = 'Server error. Try again later..';
+    const moveToChatRoom = (roomId: string) => {
+        dispatcher.changeRoom(roomId);
+        state?.socket.emit('enter room', roomId);
+        navigate(`/${roomId}`);
+    }
     const onClick = async () => {
-        const input: string = inputRef.current.value;
+        const input: string = inputRef.current.value.trim().toUpperCase();
+        const roomAlreadyAdded = 
+            state.rooms.findIndex(room => room.id === input) == -1? false : true;
+
+        if (roomAlreadyAdded) {
+            moveToChatRoom(input);
+            return;
+        }
 
         try {
             const response: Response =
@@ -96,18 +109,14 @@ const RoomIDFieldForGuest = () => {
                 amIHost: false
             }
 
-            setErrMsg('');
             dispatcher.addRoom(guestRoom);
-            dispatcher.changeRoom(guestRoom.id);
-            state?.socket.emit('enter room', guestRoom.id);
-            navigate(`/${result.room.id}`);
+            moveToChatRoom(guestRoom.id);
             return;
             
         } catch (e) {
             setErrMsg(serverErrMsg);
+            inputRef.current.value = '';
         }
-
-        inputRef.current.value = '';
     }
 
     return (
@@ -115,6 +124,7 @@ const RoomIDFieldForGuest = () => {
             <p className='guest__err-msg'>{errMsg}</p>
             <input type='text' 
                 placeholder={inputPlaceholder}
+                maxLength={maxInputLength}
                 ref={inputRef} 
                 className={'guest__id-input' + 
                     (errMsg? ' warning-border' : ' ')}
