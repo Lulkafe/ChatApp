@@ -5,7 +5,7 @@ import { io } from 'socket.io-client';
 import { AppState, ChatRoom } from '../interface';
 import { Timer, SiteHeader } from './common'; 
 import { ChatRoomPage } from './chatRoom';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 
 
 const testServerDomain = 'http://localhost:3000';
@@ -59,8 +59,10 @@ export const ChatApp = () => {
 
 const RoomIDFieldForGuest = () => {
     
-    const { dispatcher } = useContext(AppContext);
+    const { state, dispatcher } 
+        : { state: any, dispatcher : EventDispatcher} = useContext(AppContext);
     const [ errMsg, setErrMsg ] = useState('');
+    const navigate = useNavigate();
     const inputRef = useRef(null);
     const inputPlaceholder = 'Tell me Room #';
     const serverErrMsg = 'Server error. Try again later..';
@@ -96,7 +98,11 @@ const RoomIDFieldForGuest = () => {
 
             setErrMsg('');
             dispatcher.addRoom(guestRoom);
-
+            dispatcher.changeRoom(guestRoom.id);
+            state?.socket.emit('enter room', guestRoom.id);
+            navigate(`/${result.room.id}`);
+            return;
+            
         } catch (e) {
             setErrMsg(serverErrMsg);
         }
