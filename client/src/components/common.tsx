@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useInterval from 'react-useinterval';
 import { calcTimeDiff } from '../util'
 import SiteLogoIcon from '../image/site-logo.png';
 import { Link } from 'react-router-dom';
+import { TimerEvent } from '../interface';
 
 export const Timer = (props) => {
+    const timerEvents: Array<TimerEvent> = props.timerEvents;
     const onExpired = props.onExpired;
     const initialTime = props.startTime || new Date();
     const endTime = props.endTime || new Date();
@@ -12,8 +14,14 @@ export const Timer = (props) => {
     const [second, setSecond] = useState(timeLeft.sec);
     const [minute, setMinute] = useState(timeLeft.min);
     const pad0 = (n: number) => n.toString().padStart(2, '0');
-
+    
     useInterval(() => {
+
+        if (timerEvents?.length > 0) 
+            timerEvents.forEach((te: TimerEvent) => {
+                if (te.minute == minute && te.second == second)
+                    te.callback();
+            })
         
         if (minute < 0 ||
             (second <= 0 && minute <= 0)) {

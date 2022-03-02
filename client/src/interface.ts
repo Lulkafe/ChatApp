@@ -29,3 +29,9 @@ export interface MessageFrame {
     message: Message,
     roomId: string
 }
+
+export interface TimerEvent {
+    minute: number,
+    second: number,
+    callback: Function
+}

@@ -148,8 +148,6 @@ const RoomIDFieldForHost = () => {
 
     const onClick = async () => {
 
-        console.log(numOfHostingRooms, hostingRoomLimit);
-
         if (numOfHostingRooms >= hostingRoomLimit){
             setErrMsg(upperLimitErrMsg)
             return;
@@ -243,8 +241,8 @@ const TopPageBody = (props) => {
 const MessageToUser = () => {
     return (
         <div className='site-message'>
-            <h1>Need to chat but<br/>don't want to sign up?</h1>
-            <h3>No worry.<br/>Room# is only what you need.</h3>
+            <h1 className='site-message__main'>Need to chat but<br/>don't want to sign up?</h1>
+            <h3 className='site-message__sub'>No worry.<br/>Room# is only what you need.</h3>
         </div>
     )
 }
