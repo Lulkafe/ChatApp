@@ -242,9 +242,9 @@ const TopPageBody = (props) => {
 
 const MessageToUser = () => {
     return (
-        <div>
-            <h1>Want to chat but<br/>don't want to register?</h1>
-            <h3>No sign-up. Just room#</h3>
+        <div className='site-message'>
+            <h1>Need to chat but<br/>don't want to sign up?</h1>
+            <h3>No worry.<br/>Room# is only what you need.</h3>
         </div>
     )
 }
@@ -260,7 +260,7 @@ const ContentContainer = (props) => {
 const BlockForHost = () => {
     return (
         <div className='host__container'>
-            <p className='host__message'>Get your room#</p>
+            <p className='host__message'>Need a chatroom? &#128172;</p>
             <RoomIDFieldForHost />
         </div>
     )
@@ -282,7 +282,7 @@ const BlockForRooms = () => {
 
     return (
         <div className='room__container'>
-            <p className='room__header'>Rooms</p>
+            <p className='room__header'><span>Your room</span></p>
             <ul className='room-list'>
                 { rooms.length > 0? 
                   rooms.map((room: ChatRoom, i) => {
@@ -296,7 +296,7 @@ const BlockForRooms = () => {
                         </li>
                     )
                   }) :
-                  <p className='room__message'>No room is available now..</p>
+                  <p className='room__message'>No room is available yet..</p>
                 }
             </ul>
         </div>
