@@ -95,9 +95,16 @@ const ChatMsgContainer = () => {
 
 const SpeechBalloon = (props) => {
     const { userName, message, isMyComment } = props;
+    let cls = 'speech-balloon';
+    
+    if (userName)
+        cls += ' speech-balloon--with-username';
+    
+    if (isMyComment)
+        cls += ' speech-balloon--mine';
 
     return (
-        <div className={'speech-balloon' + (isMyComment? ' speech-balloon--mine':'')}>
+        <div className={cls}>
             { userName && <span className='speech-balloon__username'>{userName}:</span>}
             <p className='speech-balloon__text'>{message}</p>
         </div>
@@ -109,10 +116,16 @@ const ChatMessageInput = () => {
         { state: AppState, dispatcher: EventDispatcher } = useContext(AppContext); 
     const { socket, currentRoom } = state; 
     const [userName, setUserName] = useState('');
-    const onSubmit = (e) => {
-        e.preventDefault();
-        const textArea = e.target.usertext;
-        const nameInput = e.target.username;
+    const [enterToSubmit, setEnterToSubmit] = useState(false);
+    const checkBoxRef = useRef(null);
+    const formRef = useRef(null);
+    const textRef = useRef(null);
+    const nameInputRef = useRef(null);
+    const maxLengthName = 20;
+    const maxLengthText = 500;
+    const onClick = () => {
+        const textArea = textRef.current;
+        const nameInput = nameInputRef.current;
 
         if (nameInput.value) 
             setUserName(nameInput.value);
@@ -138,18 +151,38 @@ const ChatMessageInput = () => {
         }
 
         textArea.value = ''
+    };
+    const onChangeCheckBox = () => {
+        setEnterToSubmit(checkBoxRef.current.checked);
+    }
+    const onKeyEnter = (e) => {
+        if (enterToSubmit && e.keyCode == 13)  
+            onClick();
     }
 
     return (
-        <form className='input__form' onSubmit={onSubmit}>
-            <input type='text' placeholder='Name (optional)' 
-                name='username' className='input__user-name'
-                defaultValue={userName}/> 
-            <br />
+        <form className='input__form' ref={formRef}>
+            <div className='input__option-wrapper'>
+                <input type='text' placeholder='Name (optional)' 
+                    name='username' className='input__user-name'
+                    defaultValue={userName}
+                    ref={nameInputRef}
+                    maxLength={maxLengthName}/>
+                <div className='enter-checkbox__wrapper'> 
+                    <input type='checkbox' 
+                        className='enter-checkbox__input' 
+                        onChange={onChangeCheckBox}
+                        ref={checkBoxRef}/>
+                    <label className='enter-checkbox__label'>Enter to submit</label>
+                </div>
+            </div>
             <textarea placeholder="Type here" name='usertext' 
-                className='input__user-text'/>
+                className='input__user-text'
+                onKeyUp={onKeyEnter}
+                ref={textRef}
+                maxLength={maxLengthText}/>
             <div className='input__button-wrapper'>
-                <button type='submit' className='input__submit-button'>Submit</button>
+                <button type='button' className='input__submit-button' onClick={onClick}>Submit</button>
             </div>
         </form>
     )

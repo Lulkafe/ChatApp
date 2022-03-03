@@ -5,6 +5,7 @@
     align-items: center
     flex-grow: 1
     justify-content: space-between
+    font-family: Arial, Helvetica, sans-serif
 
 .chat-msg__container
     max-height: 100%
@@ -49,7 +50,7 @@
 
 .chat-msg__no-comment-message
     margin:0
-    font-family: Arial, Helvetica, sans-serif
+    
 
 //Wrapper for the entire chat page 
 .chat-page__wrapper
@@ -58,6 +59,10 @@
     height: 100vh
     min-height: 600px 
     flex-direction: column
+
+.enter-checkbox__wrapper
+    display: inline-block
+
 
 .input__form
     max-width: 510px
@@ -68,6 +73,11 @@
     text-align: right
     width: 100%
     max-width: 510px
+
+.input__option-wrapper
+    display: flex
+    justify-content: space-between
+    align-items: center
 
 .input__submit-button
     color: white
@@ -92,25 +102,29 @@
     resize: none
 
 .speech-balloon
-    width: 70%
+    width: 95%
     border: 1px solid #979797
     border-radius: 5px
     background: #FBFBFB
-    padding: 0.5rem 1rem 1rem 1rem
+    padding: 16px
     margin-bottom: 5px
     font-family: Arial, Helvetica, sans-serif
     align-self: flex-end
+
+.speech-balloon--with-username
+    padding-top: 8px
 
 .speech-balloon--mine
     align-self: flex-start
 
 .speech-balloon__username
     margin: 0
-    font-size: 1rem
+    font-size: 14px
+    color: #383838
 
 .speech-balloon__text
     margin: 0
-    font-size: 1.2rem
+    font-size: 1rem
     white-space: pre-line
 
 .status-bar
@@ -137,6 +151,14 @@
 /***              FOR MOBILE DEVICES                ***/
 /******************************************************/
 
+@media only screen and ( max-width: 1024px )
+    .enter-checkbox__wrapper
+        display: none
 
+
+@media only screen and ( max-width: 520px )
+    .chat-page__body
+        padding: 5px
+    
 
     
