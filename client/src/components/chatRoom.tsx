@@ -4,7 +4,9 @@ import { AppContext } from '../context'
 import { SiteHeader, Timer } from '../components/common';
 import { Navigate } from 'react-router-dom';
 import { EventDispatcher } from '../reducer';
-import PersonLogo from '../image/person-logo.png';
+import PersonIcon from '../image/person-logo.png';
+import DeleteIcon from '../image/remove-icon.png';
+import DoorIcon from '../image/door-icon.png';
 
 export const ChatRoomPage = () => {
     const { state } : { state: AppState }= useContext(AppContext); 
@@ -41,12 +43,14 @@ const StatusBar = () => {
     return (
         <div className='status-bar'>
             <div className='status-bar__content-wrapper'>
-                <span className='status-bar__roomId'>&#128273; {roomId}</span>
+                <span className='status-bar__roomId'>
+                    <img className='status-bar__door-icon' src={DoorIcon}/> {roomId}</span>
                 <span className='status-bar__participants'>
                     <img className='status-bar__participants-image' 
-                         src={PersonLogo}/> {participant}
+                         src={PersonIcon}/> {participant}
                 </span>
-                <span className='status-bar__timer'>&#128465; Deleted in <Timer
+                <span className='status-bar__timer'>
+                    <img className='status-bar__delete-icon' src={DeleteIcon}/> Deleted in <Timer
                     onExpired={() => dispatcher.expireRoom(roomId)}
                     startTime={new Date().toISOString()}
                     endTime={curRoom.expiredOn}/></span>
