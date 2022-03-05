@@ -23,7 +23,7 @@
     display: inline-block
     margin: 0 auto
     background-color: #FAFAFA
-    border-radius: 24px
+    border-radius: 34px
     padding: 0 3rem 3rem 3rem
     border: 1px solid #979797   
     position: relative 
@@ -33,7 +33,7 @@
     position: absolute
     z-index: 256
     top: 99.7%
-    right: 70%
+    right: 79%
     border: solid 20px
     display: inline-block
     border-color: #FAFAFA transparent transparent transparent
@@ -43,10 +43,16 @@
     position: absolute
     z-index: 255
     top: 100%
-    right: 70%
+    right: 79%
     border: solid 20px
     display: inline-block
     border-color: #aba8a8 transparent transparent transparent
+
+.footer-wrapper
+    margin: 0 auto
+    max-width: 510px
+    max-height: 100px
+    text-align: left
 
 .guest__container
     padding: 25px 0 33px 0
@@ -109,6 +115,9 @@
 
 .link-tag
     color: black
+
+.person-image
+    height: 100px
 
 .site-message
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
@@ -180,6 +189,18 @@
 /******************************************************/
 /***              FOR MOBILE DEVICES                ***/
 /******************************************************/
+
+@media only screen and (max-width: 380px)
+    .content-container::before
+        right: 74%    
+    .content-container::after
+        right: 74%
+    .host__message 
+        font-size: 22px
+    .guest__message
+        font-size: 22px
+    .room__header
+        font-size: 22px
 
 @media only screen and (max-width: 600px) 
     .content-container

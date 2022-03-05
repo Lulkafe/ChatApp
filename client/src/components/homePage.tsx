@@ -6,7 +6,7 @@ import { AppState, ChatRoom } from '../interface';
 import { Timer, SiteHeader } from './common'; 
 import { ChatRoomPage } from './chatRoom';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
-
+import PersonImage from '../image/person.png';
 
 const testServerDomain = 'http://localhost:3000';
 
@@ -225,8 +225,17 @@ const TopPage = () => {
                     <hr className='section-separator'/>
                     <BlockForRooms />
                 </ContentContainer>
+                <Footer/>
             </TopPageBody>
         </div>
+    )
+}
+
+const Footer = () => {
+    return (
+        <footer className='footer-wrapper'>
+            <img src={PersonImage} className='person-image'/>
+        </footer>
     )
 }
 
