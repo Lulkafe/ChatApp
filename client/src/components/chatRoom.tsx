@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
 import { AppState, ChatRoom, MessageFrame, Message  } from '../interface';
 import { AppContext } from '../context'
-import { SiteHeader, Timer } from '../components/common';
+import { SiteHeader, Timer, ToggleSwitch } from '../components/common';
 import { Navigate } from 'react-router-dom';
 import { EventDispatcher } from '../reducer';
 import PersonIcon from '../image/person-logo.png';
@@ -121,13 +121,16 @@ const ChatMessageInput = () => {
     const { socket, currentRoom } = state; 
     const [userName, setUserName] = useState('');
     const [enterToSubmit, setEnterToSubmit] = useState(false);
-    const checkBoxRef = useRef(null);
     const formRef = useRef(null);
     const textRef = useRef(null);
     const nameInputRef = useRef(null);
     const maxLengthName = 20;
     const maxLengthText = 500;
-    const onClick = () => {
+    const onSubmit = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+    const onClickSubmit = () => {
         const textArea = textRef.current;
         const nameInput = nameInputRef.current;
 
@@ -156,28 +159,27 @@ const ChatMessageInput = () => {
 
         textArea.value = ''
     };
-    const onChangeCheckBox = () => {
-        setEnterToSubmit(checkBoxRef.current.checked);
+    const onChangeCheckBox = (checked: boolean) => {
+        console.log('checkbox updated ' + checked)
+        setEnterToSubmit(checked);
     }
     const onKeyEnter = (e) => {
         if (enterToSubmit && e.keyCode == 13)  
-            onClick();
+            onClickSubmit();
     }
 
     return (
-        <form className='input__form' ref={formRef}>
+        <form className='input__form' ref={formRef} onSubmit={onSubmit}>
             <div className='input__option-wrapper'>
                 <input type='text' placeholder='Name (optional)' 
                     name='username' className='input__user-name'
                     defaultValue={userName}
                     ref={nameInputRef}
-                    maxLength={maxLengthName}/>
+                    maxLength={maxLengthName}
+                    />
                 <div className='enter-checkbox__wrapper'> 
-                    <input type='checkbox' 
-                        className='enter-checkbox__input' 
-                        onChange={onChangeCheckBox}
-                        ref={checkBoxRef}/>
-                    <label className='enter-checkbox__label'>Enter to submit</label>
+                    <label className='enter-checkbox__label'> Enter to submit</label>
+                    <ToggleSwitch onChange={onChangeCheckBox}/>
                 </div>
             </div>
             <textarea placeholder="Type here" name='usertext' 
@@ -186,7 +188,7 @@ const ChatMessageInput = () => {
                 ref={textRef}
                 maxLength={maxLengthText}/>
             <div className='input__button-wrapper'>
-                <button type='button' className='input__submit-button' onClick={onClick}>Submit</button>
+                <button type='button' className='input__submit-button' onClick={onClickSubmit}>Submit</button>
             </div>
         </form>
     )

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useInterval from 'react-useinterval';
 import { calcTimeDiff } from '../util'
 import SiteLogoIcon from '../image/site-logo.png';
@@ -44,6 +44,25 @@ export const Timer = (props) => {
         </span>
     )
 }
+
+
+export const ToggleSwitch = (props) => {
+
+    const checkBoxRef = useRef(null);
+    const onChange = () => {
+        props?.onChange(checkBoxRef.current.checked);
+    }
+
+    return (
+        <label className='toggle__container'>
+            <input className='toggle__checkbox' 
+                type='checkbox' ref={checkBoxRef}
+                onChange={onChange}/>
+            <span className='toggle__slider'/>
+        </label>
+    )
+}
+
 
 export const SiteHeader = () => {
     return (
