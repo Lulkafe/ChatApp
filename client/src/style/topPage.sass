@@ -27,6 +27,8 @@
     padding: 0 3rem 3rem 3rem
     border: 1px solid #dfdcdc  
     position: relative 
+    -webkit-box-shadow: 0px 1px 6px 1px rgba(0,0,0,0.05) 
+    box-shadow: 0px 1px 6px 1px rgba(0,0,0,0.05)
     
 .content-container::before
     content: ""
@@ -151,6 +153,8 @@
     align-items: center
     font-family: Arial, Helvetica, sans-serif
     cursor: pointer
+    -webkit-box-shadow: 0px 1px 6px 1px rgba(0,0,0,0.05) 
+    box-shadow: 0px 1px 6px 1px rgba(0,0,0,0.05)
     
 .room-tag:hover
     background: lightgray
@@ -161,8 +165,11 @@
     height: 80%
     background: #5EE36A
 
-.room-tag__indicator--expired
-    background: #2f302f
+.room-tag__indicator--yellow
+    background: #e9ed3f
+
+.room-tag__indicator--red
+    background: red
 
 .room-tag__info-container
     display: inline-block

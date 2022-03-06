@@ -2,11 +2,12 @@ import React, { useState, useEffect, useReducer, useContext, useRef } from 'reac
 import { AppContext } from '../context';
 import { initState, Reducer, EventDispatcher } from '../reducer';
 import { io } from 'socket.io-client';
-import { AppState, ChatRoom } from '../interface';
+import { AppState, ChatRoom, TimerEvent } from '../interface';
 import { Timer, SiteHeader } from './common'; 
 import { ChatRoomPage } from './chatRoom';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import PersonImage from '../image/person.png';
+import { calcTimeDiff } from '../util';
 
 const testServerDomain = 'http://localhost:3000';
 
@@ -315,6 +316,10 @@ const RoomTag = (props) => {
     const { state, dispatcher } : 
         { state: AppState, dispatcher: EventDispatcher} = useContext(AppContext);
     const { room }: { room: ChatRoom } = props;
+    const indicactorBaseClass = 'room-tag__indicator'
+    const [ indicatorClass, setIndicatorClass ] = useState(indicactorBaseClass);
+    const indicatorYellow = `${indicactorBaseClass} ${indicactorBaseClass}--yellow`;
+    const indicatorRed = `${indicactorBaseClass} ${indicactorBaseClass}--red`;
     const { socket } = state;
     const onClickTag = () => {
         if (room.id && socket) {
@@ -322,10 +327,31 @@ const RoomTag = (props) => {
             socket.emit('enter room', room.id);
         } 
     }
+    const timerEvents: Array<TimerEvent> = [
+        { 
+            minute: 5,
+            second: 0,
+            callback: function () { setIndicatorClass(indicatorYellow) }
+        },
+        { 
+            minute: 1,
+            second: 0,
+            callback: function () { setIndicatorClass(indicatorRed) }
+        }
+    ];
+
+    useEffect(() => {
+        const timeDiff = calcTimeDiff(
+            new Date().toISOString(), room.expiredOn);
+        if (timeDiff.min < 1)
+            setIndicatorClass(indicatorRed);
+        else if (timeDiff.min < 5)
+            setIndicatorClass(indicatorYellow);        
+    }, [])
 
     return (
         <div className='room-tag' onClick={onClickTag}> 
-            <span className='room-tag__indicator'></span>
+            <span className={indicatorClass}></span>
             <span className='room-tag__info-container'>
                 <div className='room-tag__room-wrapper'>
                     <p className='room-tag__header'>Room #</p>
@@ -336,7 +362,8 @@ const RoomTag = (props) => {
                     <b><Timer className='room-tag__value'
                         onExpired={() => dispatcher.expireRoom(room.id)}
                         startTime={new Date().toISOString()}
-                        endTime={room.expiredOn}/></b>
+                        endTime={room.expiredOn}
+                        timerEvents={timerEvents}/></b>
                 </div>
             </span>
         </div>
