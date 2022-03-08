@@ -66,7 +66,7 @@ const RoomIDFieldForGuest = () => {
     const navigate = useNavigate();
     const inputRef = useRef(null);
     const maxInputLength = 4;
-    const inputPlaceholder = 'Tell me Room #';
+    const inputPlaceholder = 'Tell us Room #';
     const serverErrMsg = 'Server error. Try again later..';
     const moveToChatRoom = (roomId: string) => {
         dispatcher.changeRoom(roomId);
@@ -143,7 +143,7 @@ const RoomIDFieldForHost = () => {
     const { state, dispatcher } : 
     {state: AppState, dispatcher: EventDispatcher} = useContext(AppContext);
     const { numOfHostingRooms, hostingRoomLimit } = state;
-    const fieldPlaceholder = 'Room# will appear here';
+    const fieldPlaceholder = 'Room #';
     const upperLimitErrMsg = `You can make up to ${hostingRoomLimit} rooms`;
     const serverErrMsg = 'Server error. Try again later..';
 
@@ -208,7 +208,7 @@ const RoomIDFieldForHost = () => {
                     (errMsg? ' warning-border' : '' )} 
             />
             <button type='button' onClick={onClick}
-                className='host__get-button'>Make a Room</button>
+                className='host__get-button'>Give me Room #</button>
         </div>
     )
 }
