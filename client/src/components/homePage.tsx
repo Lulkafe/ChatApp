@@ -143,11 +143,17 @@ const RoomIDFieldForHost = () => {
     const { state, dispatcher } : 
     {state: AppState, dispatcher: EventDispatcher} = useContext(AppContext);
     const { numOfHostingRooms, hostingRoomLimit } = state;
-    const fieldPlaceholder = 'Room #';
+    const fieldPlaceholder = 'Your Room #';
     const upperLimitErrMsg = `You can make up to ${hostingRoomLimit} rooms`;
     const serverErrMsg = 'Server error. Try again later..';
+    const onClickCopyBtn = (e) => {
+        e.stopPropagation();
+        if (roomId)
+            navigator.clipboard.writeText(roomId);
+    }
+    const onClickMakeRoomBtn = async (e) => {
 
-    const onClick = async () => {
+        e.stopPropagation();
 
         if (numOfHostingRooms >= hostingRoomLimit){
             setErrMsg(upperLimitErrMsg)
@@ -201,13 +207,17 @@ const RoomIDFieldForHost = () => {
     return (
         <div>
             <p className='host__err-msg'>{errMsg}</p>
-            <input type='input' readOnly
-                value={roomId} 
-                placeholder={fieldPlaceholder} 
-                className={'host__input' + 
-                    (errMsg? ' warning-border' : '' )} 
-            />
-            <button type='button' onClick={onClick}
+            <div className='host__input-wrapper'>
+                <input type='input' readOnly
+                    value={roomId} 
+                    placeholder={fieldPlaceholder} 
+                    className={'host__input' + 
+                        (errMsg? ' warning-border' : '' )} 
+                />
+                <button className='host__copy-button'
+                    onClick={onClickCopyBtn}>Copy</button>
+            </div>
+            <button type='button' onClick={onClickMakeRoomBtn}
                 className='host__get-button'>Give me Room #</button>
         </div>
     )
