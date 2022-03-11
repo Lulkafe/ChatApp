@@ -13,10 +13,22 @@
     font-size: 18px
 
 @mixin header-style
-    font-size: 1.5rem    
+    font-size: 23px    
     font-family: Arial, Helvetica, sans-serif
     text-align: center
     margin: 0 0 0.5rem 0
+
+@keyframes appearAndFadeOut 
+  0% 
+      opacity: 1
+  90% 
+      opacity: 1
+  100% 
+      opacity: 0 
+
+.appear-and-fadeout
+    animation-name: appearAndFadeOut
+    animation-duration: 4s
 
 .content-container
     width: 510px
@@ -95,10 +107,11 @@
     border-top-right-radius: 5px
     border-bottom-right-radius: 5px
     border: 1px solid #979797
+    border-left: 0
     text-align: center
     color: white
     cursor: pointer
-    background: #ABC5FC
+    background: #8f9bb4
     padding: 0
 
 .host__copy-button:hover
@@ -106,6 +119,17 @@
 
 .host__copy-button:active
     filter: brightness(80%)
+
+.host__copy-popup
+    position: absolute
+    bottom: 106%
+    left: 80%
+    font-size: 14px
+    padding: 3px
+    border-radius: 3px
+    border: 1px solid #979797
+    background: #fafafa
+    opacity: 0
 
 .host__err-msg
     margin: 0 0 2px 0
@@ -129,6 +153,9 @@
     display: flex
     align-items: center
     justify-content: center
+    position: relative
+    max-width: 200px
+    margin: 0 auto
 
 .host__get-button
     @include button-shape
@@ -151,7 +178,7 @@
     height: 100px
 
 .site-message
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+    font-family: 'Fredoka', 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 
 .room__container
     padding: 25px 0 0 0

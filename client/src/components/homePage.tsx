@@ -140,17 +140,22 @@ const RoomIDFieldForHost = () => {
 
     const [roomId, setRoomId] = useState('');
     const [errMsg, setErrMsg] = useState('');
+    const popupRef = useRef(null);
     const { state, dispatcher } : 
     {state: AppState, dispatcher: EventDispatcher} = useContext(AppContext);
     const { numOfHostingRooms, hostingRoomLimit } = state;
     const fieldPlaceholder = 'Your Room #';
+    const animeClass = 'appear-and-fadeout';
     const upperLimitErrMsg = `You can make up to ${hostingRoomLimit} rooms`;
     const serverErrMsg = 'Server error. Try again later..';
     const onClickCopyBtn = (e) => {
         e.stopPropagation();
-        if (roomId)
+
+        if (roomId) {
             navigator.clipboard.writeText(roomId);
+        }
     }
+
     const onClickMakeRoomBtn = async (e) => {
 
         e.stopPropagation();
@@ -216,6 +221,7 @@ const RoomIDFieldForHost = () => {
                 />
                 <button className='host__copy-button'
                     onClick={onClickCopyBtn}>Copy</button>
+                <span className='host__copy-popup' ref={popupRef}>Copied!</span>
             </div>
             <button type='button' onClick={onClickMakeRoomBtn}
                 className='host__get-button'>Give me Room #</button>
@@ -262,7 +268,7 @@ const MessageToUser = () => {
     return (
         <div className='site-message'>
             <h1 className='site-message__main'>Need to chat but<br/>don't want to sign up?</h1>
-            <h3 className='site-message__sub'>No worry.<br/>Room# is only what you need.</h3>
+            <h2 className='site-message__sub'>No worry.<br/>Room# is only what you need.</h2>
         </div>
     )
 }

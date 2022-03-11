@@ -14,7 +14,7 @@ export class ChatRoomHandler {
         this.validMin = 0.17;   //How long the room is valid
         this.roomArray = [];    //Keep rooms in FILO order
         this.roomDic = {};      //For quick access to a room
-        this.roomMax = 10000;   //How many rooms this handler can have
+        this.roomMax = 30000;   //How many rooms this handler can have
         this.timerObj = null;   //For managing setInterval
         this.watchRooms = true; //For testing purpose. False: disable setInterval
         this.watching = false;  //i.e. setInterval event is running or not 
@@ -86,8 +86,7 @@ export class ChatRoomHandler {
 
     private clearExpiredRooms (): void {
         
-        let sliceIdx = 0;
-        console.log(`Room Array: ${this.roomArray.length}  Room Dic: ${Object.keys(this.roomDic).length}`);
+        let roomCounter = 0;
 
         //Order of the rooms is FIFO, not random
         //This iterates until the last expired room
@@ -96,7 +95,7 @@ export class ChatRoomHandler {
 
             if (this.isRoomExpired(room)) {
                 delete this.roomDic[room.id];
-                sliceIdx += 1;
+                roomCounter += 1;
                 continue;
             } 
 
@@ -104,11 +103,10 @@ export class ChatRoomHandler {
         }
         
         //If at least one room has expired, so remove it
-        if (sliceIdx !== 0)
-            this.roomArray = this.roomArray.slice(sliceIdx);
+        if (roomCounter !== 0)
+            this.roomArray = this.roomArray.slice(roomCounter);
      
         if (this.noActiveRoom() && this.timerObj) {
-            console.log('No more active room. Stopped watching');
             clearTimeout(this.timerObj);
             this.watching = false;
         }
