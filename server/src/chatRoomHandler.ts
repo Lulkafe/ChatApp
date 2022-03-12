@@ -1,4 +1,4 @@
-import generateIds from './IdGenerator';
+import { generateIds } from './IdGenerator';
 import { ChatRoomInfo } from './interface';
 
 export class ChatRoomHandler {

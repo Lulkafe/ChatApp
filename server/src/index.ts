@@ -15,6 +15,8 @@ const io = require('socket.io')(server, {
 import { Request, Response } from 'express';
 import { ChatRoomHandler } from './chatRoomHandler';
 import { MessageFrame, ChatRoomInfo } from './interface';
+import { defaultIdLength } from './IdGenerator';
+
 const roomHandler = new ChatRoomHandler();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -59,9 +61,9 @@ app.post('/api/room/size', (req: Request, res: Response) => {
 
 app.post('/api/room/check', (req: Request, res: Response) => {
     console.log('[POST]: /api/room/check');
-    const { roomId } = req.body;
+    let { roomId } = req.body.trim();
 
-    if (!roomId)
+    if (!roomId || roomId.length > defaultIdLength)
         return res.json({ error: 'Invalid Room ID' });
 
     if (roomHandler.doesThisRoomExist(roomId)) 
@@ -75,7 +77,19 @@ io.on('connection', (socket) => {
     console.log(`[CONNECTION]: A user connected: ${socket.id}`);
 
     socket.on('chat message', (msgFrame: MessageFrame) => {
+        const maxChatMsgLength = 500;
+        const maxUserNameLength = 30;
         console.log(`[NEW MESSAGE]: TO ${msgFrame.roomId}`);
+
+        //For security purpose.
+        //The following two check are not executed under a normal situation
+        //because of maxlength at the front end side
+        if (msgFrame.message.text.length > maxChatMsgLength)
+            msgFrame.message.text = msgFrame.message.text.substring(0, maxChatMsgLength);
+
+        if (msgFrame.message.userName.length > maxChatMsgLength)
+            msgFrame.message.userName = msgFrame.message.userName.substring(0, maxUserNameLength);
+
 
         if (msgFrame.roomId) 
             socket.to(msgFrame.roomId).emit('chat message', msgFrame.message);
