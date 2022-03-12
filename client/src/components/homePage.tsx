@@ -150,10 +150,12 @@ const RoomIDFieldForHost = () => {
     const serverErrMsg = 'Server error. Try again later..';
     const onClickCopyBtn = (e) => {
         e.stopPropagation();
-
-        if (roomId) {
-            navigator.clipboard.writeText(roomId);
-        }
+        navigator.clipboard.writeText(roomId);
+        popupRef.current.classList.add(animeClass);
+    }
+    const onAnimetionEnd = (e) => {
+        e.stopPropagation();
+        popupRef.current.classList.remove(animeClass);
     }
 
     const onClickMakeRoomBtn = async (e) => {
@@ -220,8 +222,10 @@ const RoomIDFieldForHost = () => {
                         (errMsg? ' warning-border' : '' )} 
                 />
                 <button className='host__copy-button'
-                    onClick={onClickCopyBtn}>Copy</button>
-                <span className='host__copy-popup' ref={popupRef}>Copied!</span>
+                    onClick={onClickCopyBtn}
+                    disabled={roomId == ''}>Copy</button>
+                <span className='host__copy-popup' 
+                    onAnimationEnd={onAnimetionEnd} ref={popupRef}>Copied!</span>
             </div>
             <button type='button' onClick={onClickMakeRoomBtn}
                 className='host__get-button'>Give me Room #</button>

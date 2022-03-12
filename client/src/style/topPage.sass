@@ -28,7 +28,7 @@
 
 .appear-and-fadeout
     animation-name: appearAndFadeOut
-    animation-duration: 4s
+    animation-duration: 1.4s
 
 .content-container
     width: 510px
@@ -125,11 +125,31 @@
     bottom: 106%
     left: 80%
     font-size: 14px
-    padding: 3px
-    border-radius: 3px
+    padding: 5px
+    border-radius: 8px
     border: 1px solid #979797
     background: #fafafa
     opacity: 0
+
+.host__copy-popup::after
+    content: ''
+    position: absolute
+    top: 100%
+    left: 22%
+    z-index: 255
+    border: solid 9px
+    display: inline-block
+    border-color: #feffea transparent transparent transparent
+
+.host__copy-popup::before
+    content: ''
+    position: absolute
+    top: 100%
+    left: 20%
+    z-index: 255
+    border: solid 10px
+    display: inline-block
+    border-color: #979797 transparent transparent transparent
 
 .host__err-msg
     margin: 0 0 2px 0
