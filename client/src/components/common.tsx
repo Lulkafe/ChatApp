@@ -68,7 +68,7 @@ export const SiteHeader = () => {
     return (
         <header className='site-header'>
             <Link to={'/'}>
-                <img className='site-header__logo-img' src={SiteLogoIcon}/>
+                <img className='site-header__logo-img' alt='Site logo' src={SiteLogoIcon}/>
             </Link>
         </header>
     )

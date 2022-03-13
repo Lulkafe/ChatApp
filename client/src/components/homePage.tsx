@@ -51,7 +51,7 @@ export const ChatApp = () => {
     return (
         <AppContext.Provider value={{state, dispatcher}}>
             <Routes>
-                <Route path="/" element={<TopPage/>}/>
+                <Route path="/" element={<HomePage/>}/>
                 <Route path='/:id' element={<ChatRoomPage/>}/>
             </Routes>
         </AppContext.Provider>
@@ -233,11 +233,11 @@ const RoomIDFieldForHost = () => {
     )
 }
 
-const TopPage = () => {
+const HomePage = () => {
     return (
         <div>
             <SiteHeader/>
-            <TopPageBody>
+            <HomePageBody>
                 <MessageToUser/>
                 <ContentContainer>
                     <BlockForHost />
@@ -247,7 +247,7 @@ const TopPage = () => {
                     <BlockForRooms />
                 </ContentContainer>
                 <Footer/>
-            </TopPageBody>
+            </HomePageBody>
         </div>
     )
 }
@@ -255,16 +255,17 @@ const TopPage = () => {
 const Footer = () => {
     return (
         <footer className='footer-wrapper'>
-            <img src={PersonImage} className='person-image'/>
+            <img src={PersonImage} alt='Person who speaks with a speechballoon' 
+                className='person-image'/>
         </footer>
     )
 }
 
-const TopPageBody = (props) => {
+const HomePageBody = (props) => {
     return (
-        <div className='toppage-body-container'>
+        <main className='toppage-body-container'>
             { props.children }
-        </div>
+        </main>
     )
 }
 
