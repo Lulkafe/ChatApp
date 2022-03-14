@@ -225,7 +225,7 @@ const RoomIDFieldForHost = () => {
                     onClick={onClickCopyBtn}
                     disabled={roomId == ''}>Copy</button>
                 <span className='host__copy-popup' 
-                    onAnimationEnd={onAnimetionEnd} ref={popupRef}>Copied!</span>
+                    onAnimationEnd={onAnimetionEnd} ref={popupRef}>Copied</span>
             </div>
             <button type='button' onClick={onClickMakeRoomBtn}
                 className='host__get-button'>Give me Room #</button>
