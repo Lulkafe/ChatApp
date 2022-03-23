@@ -7,7 +7,7 @@ import { Timer, SiteHeader } from './common';
 import { ChatRoomPage } from './chatRoom';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import PersonImage from '../image/person.png';
-import { calcTimeDiff } from '../util';
+import { calcTimeDiff, getStoredState, saveInSessionStorage } from '../util';
 
 const testServerDomain = 'http://localhost:3000';
 
@@ -46,7 +46,14 @@ export const ChatApp = () => {
 
         dispatcher.addSocket(soc);
 
+        const storedState: AppState | null = getStoredState();
+        if (storedState)
+            dispatcher.loadData({...storedState, socket: soc});
     }, []);
+
+    useEffect(() => {
+        saveInSessionStorage(state);
+    }, [state])
     
     return (
         <AppContext.Provider value={{state, dispatcher}}>

@@ -20,6 +20,9 @@ export const ACTION = {
     },
     EXPIRE: {
         ROOM: 'A room has expired'
+    },
+    LOAD: {
+        DATA: 'Load the data to the state'
     }
 }
 
@@ -51,10 +54,12 @@ export class EventDispatcher {
     }
 
     public expireRoom(roomId: string): void {
-        console.log(`Room ${roomId} has expired`);
         this.dispatch({ type: ACTION.EXPIRE.ROOM, value: roomId });
     }
 
+    public loadData(data: AppState): void {
+        this.dispatch({ type: ACTION.LOAD.DATA, value: data });
+    }
 }
 
 export const Reducer = (state, action) => {
@@ -85,6 +90,7 @@ export const Reducer = (state, action) => {
                     })
                 }
             }
+
         case ACTION.ADD.ROOM:
             {
                 const newRoom: ChatRoom = action.value;
@@ -142,7 +148,7 @@ export const Reducer = (state, action) => {
                 if (!expiredRoomId) return state;
 
                 let numOfHostingRooms: number = state.numOfHostingRooms;
-                const rooms = state.rooms.map(room => {
+                const rooms = state.rooms.map((room:ChatRoom) => {
                   
                     if (room.id == expiredRoomId) {
                         numOfHostingRooms--; 
@@ -152,7 +158,6 @@ export const Reducer = (state, action) => {
                     return room;
                 }).filter(r => r);
 
-
                 return {
                     ...state,
                     rooms,
@@ -160,6 +165,12 @@ export const Reducer = (state, action) => {
                     currentRoom: (expiredRoomId == state.currentRoom?.id)?
                         null : state.currentRoom
                 }
+            }
+        
+        case ACTION.LOAD.DATA:
+            {
+                const data: AppState = action.value;
+                return data;
             }
         
         default:
