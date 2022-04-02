@@ -13,7 +13,8 @@ const stylesHandler = 'style-loader';
 const config = {
     entry: './src/index.tsx',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.join(__dirname, '../server/dist/frontend'),
+        clean: true
     },
     plugins: [
         new HtmlWebpackPlugin({

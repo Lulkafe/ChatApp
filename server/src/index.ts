@@ -1,16 +1,11 @@
 const express = require('express');
 const app = express();
 const http = require('http');
-const cors = require('cors');
+const path = require('path');
 const bodyParser = require('body-parser');
 const server = http.createServer(app);
-const frontEndOrigin = ['http://localhost:5501', 'http://127.0.0.1:5501'];
-const io = require('socket.io')(server, {
-    cors: {
-        origin: frontEndOrigin,
-        methods: ['GET']
-    }
-});
+const io = require('socket.io')(server);
+const helmet = require('helmet');
 
 import { Request, Response } from 'express';
 import { ChatRoomHandler } from './chatRoomHandler';
@@ -21,9 +16,13 @@ const roomHandler = new ChatRoomHandler();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors({
-    origin: frontEndOrigin
-}))
+app.use(express.static(path.join(__dirname, '../frontend')));
+app.use(helmet());
+
+app.get('/', (req: Request, res: Response) => {
+    console.log('[GET] /');
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+})
 
 
 //User requests a room ID to server
@@ -61,10 +60,12 @@ app.post('/api/room/size', (req: Request, res: Response) => {
 
 app.post('/api/room/check', (req: Request, res: Response) => {
     console.log('[POST]: /api/room/check');
-    let { roomId } = req.body.trim();
+    let { roomId } = req.body;
 
-    if (!roomId || roomId.length > defaultIdLength)
+    if (typeof roomId !== 'string' || roomId.length > defaultIdLength)
         return res.json({ error: 'Invalid Room ID' });
+
+    roomId = roomId.trim().toUpperCase();
 
     if (roomHandler.doesThisRoomExist(roomId)) 
         return res.json({ room: roomHandler.fetchRoomInfo(roomId) });
@@ -89,7 +90,6 @@ io.on('connection', (socket) => {
 
         if (msgFrame.message.userName.length > maxChatMsgLength)
             msgFrame.message.userName = msgFrame.message.userName.substring(0, maxUserNameLength);
-
 
         if (msgFrame.roomId) 
             socket.to(msgFrame.roomId).emit('chat message', msgFrame.message);
