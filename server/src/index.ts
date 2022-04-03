@@ -13,7 +13,7 @@ import { MessageFrame, ChatRoomInfo } from './interface';
 import { defaultIdLength } from './IdGenerator';
 
 const roomHandler = new ChatRoomHandler();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -73,7 +73,6 @@ app.post('/api/room/check', (req: Request, res: Response) => {
 
     res.json({ error: 'Room Not found'});
 });
-
 
 io.on('connection', (socket) => {
     console.log(`[CONNECTION]: A user connected: ${socket.id}`);

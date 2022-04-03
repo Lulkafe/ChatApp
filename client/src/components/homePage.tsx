@@ -9,7 +9,7 @@ import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import PersonImage from '../image/person.png';
 import { calcTimeDiff, getStoredState, saveInSessionStorage } from '../util';
 
-const testServerDomain = 'http://localhost:3000';
+const originURL = window.location.origin;
 
 export const ChatApp = () => {
     const [state, dispatch] = useReducer(Reducer, initState);
@@ -17,7 +17,7 @@ export const ChatApp = () => {
 
     //Initialization
     useEffect(() => {
-        const soc = io(testServerDomain);
+        const soc = io();
 
         soc.on('chat message', msg => {
            dispatcher.addMessage(msg);
@@ -28,7 +28,7 @@ export const ChatApp = () => {
             if (!roomId) return;
 
             const response: Response =
-                await fetch(`${testServerDomain}/api/room/size`, {
+                await fetch(`${originURL}/api/room/size`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ const RoomIDFieldForGuest = () => {
 
         try {
             const response: Response =
-            await fetch(`${testServerDomain}/api/room/check`, {
+            await fetch(`${originURL}/api/room/check`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ const RoomIDFieldForHost = () => {
 
         try {
             const response: Response = 
-            await fetch(`${testServerDomain}/api/room/new`);
+            await fetch(`${originURL}/api/room/new`);
             const newRoomInfo = await response.json();
 
             if ('error' in newRoomInfo) {
