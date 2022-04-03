@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const path = require('path');
-const bodyParser = require('body-parser');
 const server = http.createServer(app);
 const io = require('socket.io')(server);
 const helmet = require('helmet');
@@ -15,8 +14,8 @@ import { defaultIdLength } from './IdGenerator';
 const roomHandler = new ChatRoomHandler();
 const PORT = process.env.PORT || 3000;
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 app.use(helmet());
 
