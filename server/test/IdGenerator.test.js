@@ -1,4 +1,4 @@
-import generateIds from '../src/IdGenerator';
+import { generateIds } from '../src/IdGenerator';
 
 test('Generate IDs', () => {
     const numOfRooms = 10;
