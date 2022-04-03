@@ -16,6 +16,7 @@ const config = {
         path: path.join(__dirname, '../server/dist/frontend'),
         clean: true
     },
+    devtool: 'cheap-module-source-map',
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/index.html',

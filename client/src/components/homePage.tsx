@@ -59,7 +59,7 @@ export const ChatApp = () => {
         <AppContext.Provider value={{state, dispatcher}}>
             <Routes>
                 <Route path="/" element={<HomePage/>}/>
-                <Route path='/:id' element={<ChatRoomPage/>}/>
+                <Route path="/:id" element={<ChatRoomPage/>}/>
             </Routes>
         </AppContext.Provider>
     )

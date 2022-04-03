@@ -25,6 +25,7 @@ app.get('/', (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
 })
 
+
 //User requests a room ID to server
 app.get('/api/room/new', (req: Request, res: Response) => {
     console.log('[GET]: /api/room/new');
@@ -41,6 +42,11 @@ app.get('/api/room/new', (req: Request, res: Response) => {
         res.json({ error: 'All rooms are full. Try later..'})
     }
 });
+
+app.get('/*', (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+})
+
 
 app.post('/api/room/size', (req: Request, res: Response) => {
     console.log('[POST]: /api/room/size');
@@ -71,7 +77,7 @@ app.post('/api/room/check', (req: Request, res: Response) => {
         return res.json({ room: roomHandler.fetchRoomInfo(roomId) });
 
     res.json({ error: 'Room Not found'});
-});
+}); 
 
 io.on('connection', (socket) => {
     console.log(`[CONNECTION]: A user connected: ${socket.id}`);
