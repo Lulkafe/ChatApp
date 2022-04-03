@@ -1,19 +1,20 @@
 @mixin button-shape
     display: block
     margin: 0 auto
-    height: 40px
+    height: 45px
     width: 200px
     text-align: center
     border-radius: 5px
-    border: 1px solid #979797
+    border: 1px solid #cbcbcb
 
 @mixin button-style
     margin: 0.5rem auto 0 auto
     color: white
-    font-size: 18px
+    font-size: 1rem
+    border: 1px solid #cbcbcb
 
 @mixin header-style
-    font-size: 23px    
+    font-size: 1.2rem   
     font-family: Arial, Helvetica, sans-serif
     text-align: center
     margin: 0 0 0.5rem 0
@@ -132,6 +133,7 @@
     background: #feffbe
     color: #350c0c
     opacity: 0
+    font-family: Arial, Helvetica, sans-serif
 
 .host__copy-popup::after
     content: ''
@@ -165,7 +167,7 @@
     text-align: center
     border-top-left-radius: 5px
     border-bottom-left-radius: 5px
-    border: 1px solid #979797
+    border: 1px solid #cbcbcb
     font-size: 22px
 
 .host__input::placeholder
@@ -224,7 +226,7 @@
     @include header-style
 
 .room-tag
-    border: 1px solid #979797    
+    border: 1px solid #cbcbcb
     max-width: 250px
     height: 45px
     margin: 0 auto 7px auto
@@ -244,10 +246,11 @@
     display: inline-block
     width: 20px
     height: 80%
+    border-radius: 5px
     background: #5EE36A
 
 .room-tag__indicator--yellow
-    background: #e9ed3f
+    background: #e6e948
 
 .room-tag__indicator--red
     background: red
@@ -270,7 +273,6 @@
 
 .section-separator
     margin: 0 auto
-    max-width: 250px
 
 .warning-border
     border: 1px solid red
@@ -278,29 +280,13 @@
 /******************************************************/
 /***              FOR MOBILE DEVICES                ***/
 /******************************************************/
-
 @media only screen and (max-width: 380px)
     .content-container::before
         right: 74%    
     .content-container::after
         right: 74%
-    .host__message 
-        font-size: 22px
-    .guest__message
-        font-size: 22px
-    .room__header
-        font-size: 22px
 
-@media only screen and (max-width: 600px) 
+@media only screen and (max-width: 450px) 
     .content-container
         width: 98%
-
-@media only screen and (max-height: 760px)
-    .site-message__main
-        font-size: 24px
-        margin-bottom: 0
-    .site-message__sub
-        font-size: 16px
-        margin-top: 10px
-
     

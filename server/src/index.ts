@@ -13,17 +13,18 @@ import { MessageFrame, ChatRoomInfo } from './interface';
 import { defaultIdLength } from './IdGenerator';
 
 const roomHandler = new ChatRoomHandler();
+const PORT = process.env.PORT || 8080;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 app.use(helmet());
 
+
 app.get('/', (req: Request, res: Response) => {
     console.log('[GET] /');
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
 })
-
 
 //User requests a room ID to server
 app.get('/api/room/new', (req: Request, res: Response) => {
@@ -122,8 +123,8 @@ io.on('connection', (socket) => {
     })
 })
 
-server.listen(3000, () => {
-    console.log('Listening on port 3000');
+server.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`);
 })
 
 module.exports = server;

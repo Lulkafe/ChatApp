@@ -129,7 +129,7 @@ const RoomIDFieldForGuest = () => {
 
     return (
         <div className='guest__field-wrapper'>
-            <p className='guest__err-msg'>{errMsg}</p>
+            {errMsg && <p className='guest__err-msg'>{errMsg}</p>}
             <input type='text' 
                 placeholder={inputPlaceholder}
                 maxLength={maxInputLength}
@@ -220,7 +220,7 @@ const RoomIDFieldForHost = () => {
 
     return (
         <div>
-            <p className='host__err-msg'>{errMsg}</p>
+            {errMsg && <p className='host__err-msg'>{errMsg}</p>}
             <div className='host__input-wrapper'>
                 <input type='input' readOnly
                     value={roomId} 
@@ -232,7 +232,7 @@ const RoomIDFieldForHost = () => {
                     onClick={onClickCopyBtn}
                     disabled={roomId == ''}>Copy</button>
                 <span className='host__copy-popup' 
-                    onAnimationEnd={onAnimetionEnd} ref={popupRef}>Copied</span>
+                    onAnimationEnd={onAnimetionEnd} ref={popupRef}>Copied!</span>
             </div>
             <button type='button' onClick={onClickMakeRoomBtn}
                 className='host__get-button'>Give me Room #</button>
@@ -279,8 +279,8 @@ const HomePageBody = (props) => {
 const MessageToUser = () => {
     return (
         <div className='site-message'>
-            <h1 className='site-message__main'>Need to chat but<br/>don't want to sign up?</h1>
-            <h2 className='site-message__sub'>No worry.<br/>Room# is only what you need.</h2>
+            <h1 className='site-message__main'>No Sign-up.<br/>Auto-delete in 1 hour.</h1>
+            <h2 className='site-message__sub'>Room# is only what you need.</h2>
         </div>
     )
 }
@@ -296,7 +296,7 @@ const ContentContainer = (props) => {
 const BlockForHost = () => {
     return (
         <div className='host__container'>
-            <p className='host__message'>Need a chatroom? &#128172;</p>
+            <h3 className='host__message'>Get your room #</h3>
             <RoomIDFieldForHost />
         </div>
     )
@@ -305,7 +305,7 @@ const BlockForHost = () => {
 const BlockForGuest = () => {
     return (
         <div className='guest__container'>
-            <p className='guest__message'>Are you a guest?</p>
+            <h3 className='guest__message'>Are you a guest?</h3>
             <RoomIDFieldForGuest />
         </div>
     )
@@ -318,7 +318,7 @@ const BlockForRooms = () => {
 
     return (
         <div className='room__container'>
-            <p className='room__header'><span>Your room</span></p>
+            <h3 className='room__header'><span>Your rooms</span></h3>
             <ul className='room-list'>
                 { rooms.length > 0? 
                   rooms.map((room: ChatRoom, i) => {
