@@ -7,6 +7,10 @@ import { Timer, SiteHeader } from './common';
 import { ChatRoomPage } from './chatRoom';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import PersonImage from '../image/person.png';
+import KeyIcon from '../image/key-icon.png';
+import InviteIcon from '../image/invite-icon.png';
+import RoomIcon from '../image/room-icon.png';
+
 import { calcTimeDiff, getStoredState, saveInSessionStorage } from '../util';
 
 const originURL = window.location.origin;
@@ -296,7 +300,9 @@ const ContentContainer = (props) => {
 const BlockForHost = () => {
     return (
         <div className='host__container'>
-            <h3 className='host__message'>Get your room #</h3>
+            <h3 className='host__message'>
+                <img className='icon-key' src={KeyIcon} alt='key icon'/>
+                <span>Get your room #</span></h3>
             <RoomIDFieldForHost />
         </div>
     )
@@ -305,7 +311,9 @@ const BlockForHost = () => {
 const BlockForGuest = () => {
     return (
         <div className='guest__container'>
-            <h3 className='guest__message'>Are you a guest?</h3>
+            <h3 className='guest__message'>
+                <img className='icon-invite' src={InviteIcon} alt='invitation icon'/>
+                Are you a guest?</h3>
             <RoomIDFieldForGuest />
         </div>
     )
@@ -318,7 +326,9 @@ const BlockForRooms = () => {
 
     return (
         <div className='room__container'>
-            <h3 className='room__header'><span>Your rooms</span></h3>
+            <h3 className='room__header'>
+                <img className='icon-room' src={RoomIcon} alt='room icon'/>
+                 Your rooms</h3>
             <ul className='room-list'>
                 { rooms.length > 0? 
                   rooms.map((room: ChatRoom, i) => {
