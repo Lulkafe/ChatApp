@@ -63,7 +63,6 @@ export class EventDispatcher {
 }
 
 export const Reducer = (state, action) => {
-    console.log(`New event dispatched: ${action.type}`);
 
     switch(action.type) {
         case ACTION.ADD.MESSAGE:

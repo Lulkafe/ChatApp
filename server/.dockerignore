@@ -27,4 +27,8 @@ src
 **/babel.config.js
 **/jest.config.ts   
 **/tsconfig.json
+**/dockerignore
+**/node_modules
+README.md
 LICENSE
+.gitignore

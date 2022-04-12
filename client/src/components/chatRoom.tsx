@@ -84,7 +84,7 @@ const ChatMsgContainer = () => {
         <div className='chat-msg__container-shape'>  
             <div className='chat-msg__container' ref={msgContainerRef}>     
                 { currentRoom.messages.length === 0?
-                    <p className='chat-msg__no-comment-message'>No comment yet..</p>
+                    <p className='chat-msg__no-comment-message'>Nobody has commented yet..</p>
                     :
                     currentRoom.messages.map((message, i) => {
                     return (
@@ -163,7 +163,6 @@ const ChatMessageInput = () => {
         textArea.value = ''
     };
     const onChangeCheckBox = (checked: boolean) => {
-        console.log('checkbox updated ' + checked)
         setEnterToSubmit(checked);
     }
     const onKeyEnter = (e) => {
