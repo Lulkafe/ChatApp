@@ -160,6 +160,7 @@ const RoomIDFieldForHost = () => {
         e.stopPropagation();
         navigator.clipboard.writeText(roomId);
         popupRef.current.classList.add(animeClass);
+        
     }
     const onAnimetionEnd = (e) => {
         e.stopPropagation();
@@ -167,9 +168,7 @@ const RoomIDFieldForHost = () => {
     }
 
     const onClickMakeRoomBtn = async (e) => {
-
         e.stopPropagation();
-
         if (numOfHostingRooms >= hostingRoomLimit){
             setErrMsg(upperLimitErrMsg)
             return;
@@ -229,9 +228,10 @@ const RoomIDFieldForHost = () => {
                     className={'host__input' + 
                         (errMsg? ' warning-border' : '' )} 
                 />
-                <button className='host__copy-button'
+                <button type='button'
                     onClick={onClickCopyBtn}
-                    disabled={roomId == ''}>Copy</button>
+                    disabled={roomId === ''}
+                    className='host__copy-button'>Copy</button>
                 <span className='host__copy-popup' 
                     onAnimationEnd={onAnimetionEnd} ref={popupRef}>Copied!</span>
             </div>
