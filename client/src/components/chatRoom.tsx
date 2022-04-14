@@ -29,7 +29,7 @@ export const ChatRoomPage = () => {
                     <ChatMessageInput/>
                 </ChatPageBody>
             </main>
-        : <Navigate to='/'/>
+        : <Navigate to='/ChatApp'/>
     )
 }
 

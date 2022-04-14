@@ -10,10 +10,7 @@ import PersonImage from '../image/person.png';
 
 import { calcTimeDiff, getStoredState, saveInSessionStorage } from '../util';
 
-const DEVELOPMENT = false;
-const devDomain = 'http://localhost:3000';
-const prodDomain = 'http://s-chat1.herokuapp.com';
-const backendDomain = DEVELOPMENT? devDomain : prodDomain;
+const backendDomain = 'http://s-chat1.herokuapp.com';
 
 export const ChatApp = () => {
     const [state, dispatch] = useReducer(Reducer, initState);
@@ -62,8 +59,8 @@ export const ChatApp = () => {
     return (
         <AppContext.Provider value={{state, dispatcher}}>
             <Routes>
-                <Route path="/" element={<HomePage/>}/>
-                <Route path="/:id" element={<ChatRoomPage/>}/>
+                <Route path="/ChatApp/" element={<HomePage/>}/>
+                <Route path="/ChatApp/:id" element={<ChatRoomPage/>}/>
             </Routes>
         </AppContext.Provider>
     )
@@ -332,7 +329,7 @@ const BlockForRooms = () => {
 
                     return (
                         <li key={`room-key-${i}`}>
-                            <Link to={`/${room.id}`} 
+                            <Link to={`/ChatApp/${room.id}`} 
                                 className='link-tag'>
                                 <RoomTag room={room}/>
                             </Link>
