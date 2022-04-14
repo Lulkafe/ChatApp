@@ -5,12 +5,15 @@ import { io } from 'socket.io-client';
 import { AppState, ChatRoom, TimerEvent } from '../interface';
 import { Timer, SiteHeader } from './common'; 
 import { ChatRoomPage } from './chatRoom';
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route,  Link, useNavigate } from 'react-router-dom';
 import PersonImage from '../image/person.png';
 
 import { calcTimeDiff, getStoredState, saveInSessionStorage } from '../util';
 
-const originURL = window.location.origin;
+const DEVELOPMENT = true;
+const devDomain = 'http://localhost:3000';
+const prodDomain = 'http://s-chat1.herokuapp.com';
+const backendDomain = DEVELOPMENT? devDomain : prodDomain;
 
 export const ChatApp = () => {
     const [state, dispatch] = useReducer(Reducer, initState);
@@ -18,7 +21,7 @@ export const ChatApp = () => {
 
     //Initialization
     useEffect(() => {
-        const soc = io();
+        const soc = io(backendDomain);
 
         soc.on('chat message', msg => {
            dispatcher.addMessage(msg);
@@ -29,7 +32,7 @@ export const ChatApp = () => {
             if (!roomId) return;
 
             const response: Response =
-                await fetch(`${originURL}/api/room/size`, {
+                await fetch(`${backendDomain}/api/room/size`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -93,7 +96,7 @@ const RoomIDFieldForGuest = () => {
 
         try {
             const response: Response =
-            await fetch(`${originURL}/api/room/check`, {
+            await fetch(`${backendDomain}/api/room/check`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -176,7 +179,7 @@ const RoomIDFieldForHost = () => {
 
         try {
             const response: Response = 
-            await fetch(`${originURL}/api/room/new`);
+            await fetch(`${backendDomain}/api/room/new`);
             const newRoomInfo = await response.json();
 
             if ('error' in newRoomInfo) {

@@ -1,28 +1,35 @@
-const express = require('express');
-const app = express();
-const http = require('http');
-const path = require('path');
-const server = http.createServer(app);
-const io = require('socket.io')(server);
-const helmet = require('helmet');
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 
 import { Request, Response } from 'express';
 import { ChatRoomHandler } from './chatRoomHandler';
 import { MessageFrame, ChatRoomInfo } from './interface';
 import { defaultIdLength } from './IdGenerator';
 
+const express = require('express');
+const app = express();
+const http = require('http');
+const cors = require('cors');
+const path = require('path');
+const server = http.createServer(app);
+const allowed_origin = process.env.ALLOWED_ORIGIN?.split(',');
+
+const io = require('socket.io')(server, {
+    cors: {
+        origin: allowed_origin,
+        methods: ['GET']
+    }
+});
 const roomHandler = new ChatRoomHandler();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../frontend')));
-app.use(helmet());
-
-
-app.get('/', (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
-})
+app.use(cors({
+    origin: allowed_origin,
+    methods: ['GET', 'POST']
+}));
 
 
 //User requests a room ID to server
@@ -40,10 +47,6 @@ app.get('/api/room/new', (req: Request, res: Response) => {
         res.json({ error: 'All rooms are full. Try later..'})
     }
 });
-
-app.get('/*', (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
-})
 
 
 app.post('/api/room/size', (req: Request, res: Response) => {

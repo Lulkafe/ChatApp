@@ -1,7 +1,7 @@
 **/.classpath
 **/.dockerignore
-**/.env
 **/.git
+**/.env
 **/.gitignore
 **/.project
 **/.settings
@@ -26,5 +26,6 @@ src
 **/test
 **/babel.config.js
 **/jest.config.ts   
+**/jest.config.js
 **/tsconfig.json
 LICENSE
