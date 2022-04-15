@@ -22,10 +22,9 @@
 **/values.dev.yaml
 README.md
 
-src
 **/test
+**/dist
 **/babel.config.js
 **/jest.config.ts   
 **/jest.config.js
-**/tsconfig.json
 LICENSE
