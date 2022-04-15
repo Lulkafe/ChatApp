@@ -24,6 +24,9 @@ const io = require('socket.io')(server, {
 const roomHandler = new ChatRoomHandler();
 const PORT = process.env.PORT || 3000;
 
+console.log(`PORT: ${PORT}`);
+console.log(`ORIGIN: ${allowed_origin}`);
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(helmet());
