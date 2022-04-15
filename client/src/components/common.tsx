@@ -66,7 +66,7 @@ export const ToggleSwitch = (props) => {
 export const SiteHeader = () => {
     return (
         <header className='site-header'>
-            <Link to={'/'}>
+            <Link to={'/ChatApp'}>
                 <img className='site-header__logo-img' alt='Site logo' src={SiteLogoIcon}/>
             </Link>
         </header>

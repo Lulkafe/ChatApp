@@ -79,7 +79,7 @@ const RoomIDFieldForGuest = () => {
     const moveToChatRoom = (roomId: string) => {
         dispatcher.changeRoom(roomId);
         state?.socket.emit('enter room', roomId);
-        navigate(`/${roomId}`);
+        navigate(`/ChatApp/${roomId}`);
     }
     const onClick = async () => {
         const input: string = inputRef.current.value.trim().toUpperCase();
