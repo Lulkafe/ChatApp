@@ -10,7 +10,7 @@ import PersonImage from '../image/person.png';
 
 import { calcTimeDiff, getStoredState, saveInSessionStorage } from '../util';
 
-const backendDomain = 'https://s-chat-backend.onrender.com/';
+const backendDomain = 'https://s-chat-backend.onrender.com';
 
 export const ChatApp = () => {
     const [state, dispatch] = useReducer(Reducer, initState);
