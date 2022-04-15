@@ -10,7 +10,7 @@ import PersonImage from '../image/person.png';
 
 import { calcTimeDiff, getStoredState, saveInSessionStorage } from '../util';
 
-const backendDomain = 'http://s-chat1.herokuapp.com';
+const backendDomain = 'https://s-chat.onrender.com:10000';
 
 export const ChatApp = () => {
     const [state, dispatch] = useReducer(Reducer, initState);
