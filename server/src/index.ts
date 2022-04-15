@@ -11,7 +11,7 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const cors = require('cors');
-const path = require('path');
+const helmet = require('helmet');
 const server = http.createServer(app);
 const allowed_origin = process.env.ALLOWED_ORIGIN?.split(',');
 
@@ -26,6 +26,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(helmet());
 app.use(cors({
     origin: allowed_origin,
     methods: ['GET', 'POST']
