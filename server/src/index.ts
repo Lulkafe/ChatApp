@@ -1,4 +1,5 @@
-if (process.env.NODE_ENV !== 'production') {
+const isNotProduction = process.env.NODE_ENV !== 'production';
+if (isNotProduction) {
     require('dotenv').config();
 }
 
@@ -23,7 +24,12 @@ const io = require('socket.io')(server, {
 });
 const roomHandler = new ChatRoomHandler();
 const PORT = process.env.PORT || 3000;
+const DELAY_FOR_TEST = process.env.DELAY || 0;
 
+if (isNotProduction)
+    console.log(`RESPONCE DELAY (TEST): ${DELAY_FOR_TEST}`);
+
+console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 console.log(`PORT: ${PORT}`);
 console.log(`ORIGIN: ${allowed_origin}`);
 
@@ -37,7 +43,12 @@ app.use(cors({
 
 
 //User requests a room ID to server
-app.get('/api/room/new', (req: Request, res: Response) => {
+app.get('/api/room/new', async (req: Request, res: Response) => {
+
+    //Simulating delay for testing front-end 
+    if (isNotProduction && DELAY_FOR_TEST) {
+        await new Promise(resolve => setTimeout(resolve, parseInt(DELAY_FOR_TEST)))
+    }
     
     if (roomHandler.canCreateNewRoom()) {
         try {
@@ -66,7 +77,13 @@ app.post('/api/room/size', (req: Request, res: Response) => {
 
 })
 
-app.post('/api/room/check', (req: Request, res: Response) => {
+app.post('/api/room/check', async (req: Request, res: Response) => {
+
+    //Simulating delay for testing front-end
+    if (isNotProduction && DELAY_FOR_TEST) {
+        await new Promise(resolve => setTimeout(resolve, parseInt(DELAY_FOR_TEST)))
+    }
+
     let { roomId } = req.body;
 
     if (typeof roomId !== 'string' || roomId.length > defaultIdLength)
@@ -86,9 +103,6 @@ io.on('connection', (socket) => {
         const maxChatMsgLength = 500;
         const maxUserNameLength = 30;
 
-        //For security purpose.
-        //The following two check are not executed under a normal situation
-        //because of maxlength at the front end side
         if (msgFrame.message.text.length > maxChatMsgLength)
             msgFrame.message.text = msgFrame.message.text.substring(0, maxChatMsgLength);
 

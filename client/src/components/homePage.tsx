@@ -1,271 +1,30 @@
-import React, { useState, useEffect, useReducer, useContext, useRef } from 'react';
+import React, { useContext } from 'react';
 import { AppContext } from '../context';
-import { initState, Reducer, EventDispatcher } from '../reducer';
-import { io } from 'socket.io-client';
-import { AppState, ChatRoom, TimerEvent } from '../interface';
-import { Timer, SiteHeader } from './common'; 
-import { ChatRoomPage } from './chatRoom';
-import { Routes, Route,  Link, useNavigate } from 'react-router-dom';
+import { AppState, ChatRoom } from '../interface';
+import { SiteHeader } from './common'; 
+import { Link } from 'react-router-dom';
 import PersonImage from '../image/person.png';
+import { rootPath } from '../settings'
+import { RoomIDFieldForGuest } from './roomIDFieldForGuest';
+import { RoomIDFieldForHost } from './roomIDFieldForHost';
+import { RoomTag } from './roomTag';
 
-import { calcTimeDiff, getStoredState, saveInSessionStorage } from '../util';
-
-const backendDomain = 'https://s-chat-backend.onrender.com';
-
-export const ChatApp = () => {
-    const [state, dispatch] = useReducer(Reducer, initState);
-    const dispatcher: EventDispatcher = new EventDispatcher(dispatch);
-
-    //Initialization
-    useEffect(() => {
-        const soc = io(backendDomain);
-
-        soc.on('chat message', msg => {
-           dispatcher.addMessage(msg);
-        });
-
-        soc.on('update participant', async (roomId) => {
-
-            if (!roomId) return;
-
-            const response: Response =
-                await fetch(`${backendDomain}/api/room/size`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({ roomId })
-                });
-
-            const result = await response.json();
-            
-            if (result && result?.size) 
-                dispatcher.updateRoomParticipant(result.size);
-           
-        })
-
-        dispatcher.addSocket(soc);
-
-        const storedState: AppState | null = getStoredState();
-        if (storedState)
-            dispatcher.loadData({...storedState, socket: soc});
-    }, []);
-
-    useEffect(() => {
-        saveInSessionStorage(state);
-    }, [state])
-    
-    return (
-        <AppContext.Provider value={{state, dispatcher}}>
-            <Routes>
-                <Route path="/ChatApp/" element={<HomePage/>}/>
-                <Route path="/ChatApp/:id" element={<ChatRoomPage/>}/>
-            </Routes>
-        </AppContext.Provider>
-    )
-}
-
-const RoomIDFieldForGuest = () => {
-    
-    const { state, dispatcher } 
-        : { state: AppState, dispatcher : EventDispatcher} = useContext(AppContext);
-    const [ errMsg, setErrMsg ] = useState('');
-    const navigate = useNavigate();
-    const inputRef = useRef(null);
-    const maxInputLength = 4;
-    const inputPlaceholder = 'Tell us Room #';
-    const serverErrMsg = 'Server error. Try again later..';
-    const moveToChatRoom = (roomId: string) => {
-        dispatcher.changeRoom(roomId);
-        state?.socket.emit('enter room', roomId);
-        navigate(`/ChatApp/${roomId}`);
-    }
-    const onClick = async () => {
-        const input: string = inputRef.current.value.trim().toUpperCase();
-        const roomAlreadyAdded = 
-            state.rooms.findIndex(room => room.id === input) == -1? false : true;
-
-        if (roomAlreadyAdded) {
-            moveToChatRoom(input);
-            return;
-        }
-
-        try {
-            const response: Response =
-            await fetch(`${backendDomain}/api/room/check`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ roomId: input })
-            });
-
-            const result = await response.json();
-
-            if ('error' in result) {
-                setErrMsg(result.error);
-                return;
-            } 
-
-            const guestRoom: ChatRoom = {
-                id: result.room.id,
-                createdOn: result.room.createdOn,
-                expiredOn: result.room.expiredOn,
-                messages: [],
-                participant: 0,
-                amIHost: false
-            }
-
-            dispatcher.addRoom(guestRoom);
-            moveToChatRoom(guestRoom.id);
-            return;
-            
-        } catch (e) {
-            setErrMsg(serverErrMsg);
-            inputRef.current.value = '';
-        }
-    }
-
-    return (
-        <div className='guest__field-wrapper'>
-            {errMsg && <p className='guest__err-msg'>{errMsg}</p>}
-            <input type='text' 
-                placeholder={inputPlaceholder}
-                maxLength={maxInputLength}
-                ref={inputRef} 
-                className={'guest__id-input' + 
-                    (errMsg? ' warning-border' : ' ')}
-            />
-            <button type='button' onClick={onClick}
-                className='guest__submit-button'>Enter</button>
-        </div>
-    )
-}
-
-const RoomIDFieldForHost = () => {
-
-    const [roomId, setRoomId] = useState('');
-    const [errMsg, setErrMsg] = useState('');
-    const popupRef = useRef(null);
-    const { state, dispatcher } : 
-    {state: AppState, dispatcher: EventDispatcher} = useContext(AppContext);
-    const { numOfHostingRooms, hostingRoomLimit } = state;
-    const fieldPlaceholder = 'Your Room #';
-    const animeClass = 'appear-and-fadeout';
-    const upperLimitErrMsg = `You can make up to ${hostingRoomLimit} rooms`;
-    const serverErrMsg = 'Server error. Try again later..';
-    const onClickCopyBtn = (e) => {
-        e.stopPropagation();
-        navigator.clipboard.writeText(roomId);
-        popupRef.current.classList.add(animeClass);
-        
-    }
-    const onAnimetionEnd = (e) => {
-        e.stopPropagation();
-        popupRef.current.classList.remove(animeClass);
-    }
-
-    const onClickMakeRoomBtn = async (e) => {
-        e.stopPropagation();
-        if (numOfHostingRooms >= hostingRoomLimit){
-            setErrMsg(upperLimitErrMsg)
-            return;
-        } 
-
-        try {
-            const response: Response = 
-            await fetch(`${backendDomain}/api/room/new`);
-            const newRoomInfo = await response.json();
-
-            if ('error' in newRoomInfo) {
-                setErrMsg(newRoomInfo.error);
-                setRoomId('');
-                return;
-            }
-
-            setRoomId(newRoomInfo.id);
-
-            //Server doesn't keep the user messages
-            //so a message array added here for front-end use 
-            const newRoom: ChatRoom = {
-                ...newRoomInfo,
-                messages: [],
-                participant: 0,
-                amIHost: true
-            }
-
-            setErrMsg('');
-            dispatcher.addRoom(newRoom);
-        
-        } catch (e) {
-            setErrMsg(serverErrMsg)
-        }
-        
-    }
-
-    useEffect(() => {
-        const hostingRoomExpired = 
-            (state.rooms.findIndex(room => room.id == roomId)) < 0;
-    
-        if (hostingRoomExpired)
-            setRoomId('');
-
-        if (numOfHostingRooms < hostingRoomLimit &&
-            errMsg === upperLimitErrMsg)
-            setErrMsg('');
-
-    }, [state.rooms])
-
-    return (
-        <div>
-            {errMsg && <p className='host__err-msg'>{errMsg}</p>}
-            <div className='host__input-wrapper'>
-                <input type='input' readOnly
-                    value={roomId} 
-                    placeholder={fieldPlaceholder} 
-                    className={'host__input' + 
-                        (errMsg? ' warning-border' : '' )} 
-                />
-                <button type='button'
-                    onClick={onClickCopyBtn}
-                    disabled={roomId === ''}
-                    className='host__copy-button'>Copy</button>
-                <span className='host__copy-popup' 
-                    onAnimationEnd={onAnimetionEnd} ref={popupRef}>Copied!</span>
-            </div>
-            <button type='button' onClick={onClickMakeRoomBtn}
-                className='host__get-button'>Give me Room #</button>
-        </div>
-    )
-}
-
-const HomePage = () => {
+export const HomePage = () => {
     return (
         <div>
             <SiteHeader/>
             <HomePageBody>
                 <MessageToUser/>
                 <ContentContainer>
-                    <BlockForHost />
+                    <SectionForHost />
                     <hr className='section-separator'/>
-                    <BlockForGuest />
+                    <SectionForGuest />
                     <hr className='section-separator'/>
-                    <BlockForRooms />
+                    <SectionForRooms />
                 </ContentContainer>
                 <Footer/>
             </HomePageBody>
         </div>
-    )
-}
-
-const Footer = () => {
-    return (
-        <footer className='footer-wrapper'>
-            <img src={PersonImage} alt='Person who speaks with a speechballoon' 
-                className='person-image'/>
-        </footer>
     )
 }
 
@@ -294,7 +53,7 @@ const ContentContainer = (props) => {
     )
 }
 
-const BlockForHost = () => {
+const SectionForHost = () => {
     return (
         <div className='host__container'>
             <h3 className='host__message'>
@@ -304,7 +63,7 @@ const BlockForHost = () => {
     )
 }
 
-const BlockForGuest = () => {
+const SectionForGuest = () => {
     return (
         <div className='guest__container'>
             <h3 className='guest__message'>
@@ -314,7 +73,7 @@ const BlockForGuest = () => {
     )
 }
 
-const BlockForRooms = () => {
+const SectionForRooms = () => {
     
     const { state } : { state: AppState } = useContext(AppContext);
     const { rooms } = state;
@@ -329,7 +88,7 @@ const BlockForRooms = () => {
 
                     return (
                         <li key={`room-key-${i}`}>
-                            <Link to={`/ChatApp/${room.id}`} 
+                            <Link to={`${rootPath}${room.id}`} 
                                 className='link-tag'>
                                 <RoomTag room={room}/>
                             </Link>
@@ -343,61 +102,11 @@ const BlockForRooms = () => {
     )
 }
 
-const RoomTag = (props) => {
-    
-    const { state, dispatcher } : 
-        { state: AppState, dispatcher: EventDispatcher} = useContext(AppContext);
-    const { room }: { room: ChatRoom } = props;
-    const indicactorBaseClass = 'room-tag__indicator'
-    const [ indicatorClass, setIndicatorClass ] = useState(indicactorBaseClass);
-    const indicatorYellow = `${indicactorBaseClass} ${indicactorBaseClass}--yellow`;
-    const indicatorRed = `${indicactorBaseClass} ${indicactorBaseClass}--red`;
-    const { socket } = state;
-    const onClickTag = () => {
-        if (room.id && socket) {
-            dispatcher.changeRoom(room.id);
-            socket.emit('enter room', room.id);
-        } 
-    }
-    const timerEvents: Array<TimerEvent> = [
-        { 
-            minute: 5,
-            second: 0,
-            callback: function () { setIndicatorClass(indicatorYellow) }
-        },
-        { 
-            minute: 1,
-            second: 0,
-            callback: function () { setIndicatorClass(indicatorRed) }
-        }
-    ];
-
-    useEffect(() => {
-        const timeDiff = calcTimeDiff(
-            new Date().toISOString(), room.expiredOn);
-        if (timeDiff.min < 1)
-            setIndicatorClass(indicatorRed);
-        else if (timeDiff.min < 5)
-            setIndicatorClass(indicatorYellow);        
-    }, [])
-
+const Footer = () => {
     return (
-        <div className='room-tag' onClick={onClickTag}> 
-            <span className={indicatorClass}></span>
-            <span className='room-tag__info-container'>
-                <div className='room-tag__room-wrapper'>
-                    <p className='room-tag__header'>Room #</p>
-                    <p className='room-tag__value'><b>{room.id}</b></p>
-                </div>
-                <div className='room-tag__time-wrapper'>
-                    <p className='room-tag__header'>Deleted in</p>
-                    <b><Timer className='room-tag__value'
-                        onExpired={() => dispatcher.expireRoom(room.id)}
-                        startTime={new Date().toISOString()}
-                        endTime={room.expiredOn}
-                        timerEvents={timerEvents}/></b>
-                </div>
-            </span>
-        </div>
+        <footer className='footer-wrapper'>
+            <img src={PersonImage} alt='Person who speaks with a speechballoon' 
+                className='person-image'/>
+        </footer>
     )
 }

@@ -7,6 +7,7 @@ import { EventDispatcher } from '../reducer';
 import PersonIcon from '../image/person-icon.png';
 import DeleteIcon from '../image/delete-icon.png';
 import DoorIcon from '../image/door-icon.png';
+import { rootPath } from '../settings';
 
 export const ChatRoomPage = () => {
     const { state } : { state: AppState }= useContext(AppContext); 
@@ -29,7 +30,7 @@ export const ChatRoomPage = () => {
                     <ChatMessageInput/>
                 </ChatPageBody>
             </main>
-        : <Navigate to='/ChatApp'/>
+        : <Navigate to={`${rootPath}`}/>
     )
 }
 
@@ -95,7 +96,7 @@ const ChatMsgContainer = () => {
                             isMyComment={message.isMyComment}/>
                     )
                 }) }  
-            </div> 
+            </div>  
         </div>   
     )
 }

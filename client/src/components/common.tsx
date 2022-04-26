@@ -4,6 +4,7 @@ import { calcTimeDiff } from '../util'
 import SiteLogoIcon from '../image/site-logo.png';
 import { Link } from 'react-router-dom';
 import { TimerEvent } from '../interface';
+import { rootPath } from '../settings';
 
 export const Timer = (props) => {
     const timerEvents: Array<TimerEvent> = props.timerEvents;
@@ -66,7 +67,7 @@ export const ToggleSwitch = (props) => {
 export const SiteHeader = () => {
     return (
         <header className='site-header'>
-            <Link to={'/ChatApp'}>
+            <Link to={`${rootPath}`}>
                 <img className='site-header__logo-img' alt='Site logo' src={SiteLogoIcon}/>
             </Link>
         </header>
